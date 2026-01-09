@@ -111,54 +111,250 @@ npm run dev
 - Django Admin: http://localhost:8000/admin
 - API Browser: http://localhost:8000/api/
 
-## 📋 CLI Usage Examples
+## 📋 Comprehensive CLI Usage Examples
 
-### Student Management
+### 👨‍🎓 Student Management
 ```bash
-# Add a new student
-python manage.py add_student --student-id "STU001" --first-name "John" --last-name "Doe" --email "john@example.com"
+# Basic student operations
+python manage.py add_student \
+    --student-id "STU001" \
+    --first-name "Ahmad" \
+    --last-name "Baba" \
+    --email "ahmad.baba@example.edu" \
+    --phone "+1234567890" \
+    --level "100" \
+    --program "CS" \
+    --session "2024/2025"
 
-# Bulk enroll students
-python manage.py bulk_enroll_students --csv-file students.csv --course-code "CS101"
+# Update existing student
+python manage.py update_student STU001 \
+    --email "ahmad.newemail@example.edu" \
+    --phone "+0987654321"
 
-# Generate student analytics
-python manage.py student_analytics --level "300"
+# Bulk import from CSV
+python manage.py import_students_csv --file-path "new_students.csv"
+
+# Search students
+python manage.py search_students --query "Ahmad" --level "200"
+
+# Promote students to next level
+python manage.py promote_students --from-level "100" --to-level "200"
+
+# Validate student data integrity
+python manage.py validate_student_data --full-report
 ```
 
-### Course Operations
+### 📚 Course & Curriculum Management
 ```bash
-# Create a new course
-python manage.py add_course --code "CS201" --name "Data Structures" --units 3
+# Course creation and management
+python manage.py add_course \
+    --code "CS301" \
+    --name "Algorithms and Complexity" \
+    --units 3 \
+    --department "Computer Science"
 
-# Add prerequisite relationship
-python manage.py add_prerequisite --course "CS201" --prerequisite "CS101"
+# Curriculum mapping
+python manage.py add_curriculum_course \
+    --program "CS" \
+    --course "CS301" \
+    --level "300" \
+    --semester "FALL"
 
-# Manage curriculum
-python manage.py add_curriculum_course --program "CS" --course "CS201" --level "200"
+# Prerequisites setup
+python manage.py add_prerequisite \
+    --course "CS301" \
+    --prerequisite "CS201"
+
+# Course offering creation
+python manage.py create_course_offering \
+    --course "CS301" \
+    --session "2024/2025" \
+    --semester "FALL" \
+    --capacity 50
+
+# Course search and listing
+python manage.py search_courses --query "algorithms" --department "CS"
 ```
 
-### Grading Workflow
+### 👩‍🏫 Teacher & Faculty Management
 ```bash
-# Record scores
-python manage.py record_scores --course-offering "CS201-FALL2024" --csv scores.csv
+# Add new teacher
+python manage.py add_teacher \
+    --staff-id "TCH001" \
+    --first-name "Dr. Sarah" \
+    --last-name "Johnson" \
+    --email "s.johnson@college.edu" \
+    --department "Computer Science"
 
-# Calculate final grades
-python manage.py calculate_grades --course-offering "CS201-FALL2024"
+# Assign teacher to course
+python manage.py assign_teacher \
+    --teacher "TCH001" \
+    --course-offering "CS301-FALL2024"
 
-# Approve grades (requires faculty role)
-python manage.py approve_grades --course-offering "CS201-FALL2024"
+# Bulk teacher assignment
+python manage.py bulk_assign_teachers --assignments-file "teacher_assignments.csv"
+
+# Teacher workload report
+python manage.py generate_teacher_stats --semester "FALL2024"
 ```
 
-### Reporting & Analytics
+### 📊 Enrollment Operations
 ```bash
-# Generate cohort graduation audit
-python manage.py cohort_graduation_audit --cohort-year 2020
+# Individual enrollment
+python manage.py enroll_student \
+    --student "STU001" \
+    --course-offering "CS301-FALL2024"
 
-# Export grades to Excel
-python manage.py export_grades_excel --course-offering "CS201-FALL2024"
+# Bulk enrollment from file
+python manage.py bulk_enroll_students \
+    --csv-file "enrollments.csv" \
+    --course-offering "CS301-FALL2024"
 
-# Generate student statistics
-python manage.py generate_student_stats --start-date "2024-01-01"
+# List all enrollments
+python manage.py list_enrollments --course-offering "CS301-FALL2024"
+
+# Enrollment validation
+python manage.py validate_enrollments --session "2024/2025"
+```
+
+### 📝 Grading & Assessment
+```bash
+# Score recording
+python manage.py record_scores \
+    --course-offering "CS301-FALL2024" \
+    --scores-file "student_scores.csv"
+
+# Grade calculation with custom rules
+python manage.py calculate_grades \
+    --course-offering "CS301-FALL2024" \
+    --grading-scheme "standard"
+
+# Grade submission workflow
+python manage.py submit_grades --course-offering "CS301-FALL2024"
+
+# Faculty grade approval
+python manage.py approve_grades \
+    --course-offering "CS301-FALL2024" \
+    --approver "DEPT_HEAD_001"
+
+# Grade rejection with feedback
+python manage.py reject_grades \
+    --course-offering "CS301-FALL2024" \
+    --reason "Calculation error found"
+
+# Export grades in multiple formats
+python manage.py export_grades_excel --course-offering "CS301-FALL2024"
+python manage.py export_grades_csv --course-offering "CS301-FALL2024" --include-comments
+```
+
+### 📈 Analytics & Reporting
+```bash
+# Student performance analytics
+python manage.py student_analytics \
+    --level "300" \
+    --program "CS" \
+    --semester "FALL2024"
+
+# Cohort graduation audit
+python manage.py cohort_graduation_audit \
+    --cohort-year 2020 \
+    --program "CS" \
+    --detailed-report
+
+# Repeated courses analysis
+python manage.py repeated_courses_report \
+    --session "2024/2025" \
+    --threshold 2
+
+# Enrollment statistics
+python manage.py generate_enrollment_stats \
+    --start-date "2024-09-01" \
+    --end-date "2024-12-31"
+
+# Grade distribution analysis
+python manage.py generate_student_stats \
+    --metric "gpa" \
+    --min-value 2.0 \
+    --group-by "program"
+```
+
+### 📄 Transcript Generation
+```bash
+# Individual transcript
+python manage.py generate_transcript \
+    --student "STU001" \
+    --session "2024/2025"
+
+# Secure tamper-proof transcript
+python manage.py generate_secure_transcript \
+    --student "STU001" \
+    --verification-code "ABC123XYZ"
+
+# Batch transcript generation
+python manage.py batch_generate_transcripts \
+    --student-list "graduating_students.csv" \
+    --output-dir "./transcripts/"
+
+# Transcript verification
+python manage.py verify_transcript \
+    --transcript-file "STU001_transcript.pdf" \
+    --verification-code "ABC123XYZ"
+```
+
+### ⚙️ System Administration
+```bash
+# User and role management
+python manage.py create_user \
+    --username "registrar" \
+    --email "registrar@college.edu" \
+    --role "registrar"
+
+python manage.py assign_role \
+    --user "registrar" \
+    --role "registrar" \
+    --department "Administration"
+
+python manage.py setup_roles --initialize-default-roles
+
+# System configuration
+python manage.py update_college_settings \
+    --setting "max_credits_per_semester" \
+    --value 18
+
+python manage.py show_settings --category "academic"
+
+# Academic policy updates
+python manage.py update_academic_policy \
+    --policy "grade_scale" \
+    --effective-date "2025-01-01"
+
+# Audit logging
+python manage.py log_action \
+    --user "admin" \
+    --action "bulk_student_import" \
+    --details "Imported 150 new students from CSV"
+```
+
+### 🌱 Data Seeding & Testing
+```bash
+# Seed sample data for testing
+python manage.py seed_data \
+    --students 100 \
+    --courses 20 \
+    --teachers 15
+
+# Seed grading configurations
+python manage.py seed_grading_settings \
+    --scheme "standard" \
+    --grade-points "A+=4.0,A=4.0,B+=3.3,B=3.0,C+=2.3,C=2.0,D=1.0,F=0.0"
+
+# Populate academic sessions
+python manage.py populate_sessions \
+    --start-year 2020 \
+    --end-year 2025
+
+# Data integrity checks
+python manage.py check_null_sessions --repair-missing
 ```
 
 ## 🔐 Roles & Permissions
