@@ -1,0 +1,191 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Batch Transcript Generation | Reporting{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Batch Transcript Generation</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-8" x-data="{ generationType: 'all' }">
+  <!-- Page Header -->
+  <div class="rounded-2xl border border-purple-200 bg-white p-8 shadow-xl">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900">
+          Batch Transcript Generation
+        </h1>
+        <p class="mt-2 text-slate-600 font-medium">Generate transcripts for multiple students at once</p>
+      </div>
+      <div class="hidden sm:flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 shadow-lg">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generation Form -->
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
+    
+    <!-- Generation Type Selection -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white p-8 shadow-lg">
+      <h2 class="text-lg font-bold text-slate-900 mb-4">Select Generation Type</h2>
+      
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="relative flex cursor-pointer rounded-xl border-2 p-4 transition-all" :class="generationType === 'all' ? 'border-purple-600 bg-purple-50 ring-2 ring-purple-500/20' : 'border-slate-200 hover:border-purple-400'">
+          <input type="radio" name="generation_type" value="all" x-model="generationType" class="sr-only" checked>
+          <div class="flex-1">
+            <div class="font-semibold" :class="generationType === 'all' ? 'text-purple-700' : 'text-slate-800'">All Students</div>
+            <div class="text-sm text-slate-600">Generate for entire database</div>
+          </div>
+          <svg x-show="generationType === 'all'" class="h-5 w-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+        </label>
+
+        <label class="relative flex cursor-pointer rounded-xl border-2 p-4 transition-all" :class="generationType === 'session' ? 'border-purple-600 bg-purple-50 ring-2 ring-purple-500/20' : 'border-slate-200 hover:border-purple-400'">
+          <input type="radio" name="generation_type" value="session" x-model="generationType" class="sr-only">
+          <div class="flex-1">
+            <div class="font-semibold" :class="generationType === 'session' ? 'text-purple-700' : 'text-slate-800'">By Session</div>
+            <div class="text-sm text-slate-600">Filter by academic session</div>
+          </div>
+          <svg x-show="generationType === 'session'" class="h-5 w-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+        </label>
+
+        <label class="relative flex cursor-pointer rounded-xl border-2 p-4 transition-all" :class="generationType === 'level' ? 'border-purple-600 bg-purple-50 ring-2 ring-purple-500/20' : 'border-slate-200 hover:border-purple-400'">
+          <input type="radio" name="generation_type" value="level" x-model="generationType" class="sr-only">
+          <div class="flex-1">
+            <div class="font-semibold" :class="generationType === 'level' ? 'text-purple-700' : 'text-slate-800'">By Level</div>
+            <div class="text-sm text-slate-600">Filter by student level</div>
+          </div>
+          <svg x-show="generationType === 'level'" class="h-5 w-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+        </label>
+
+        <label class="relative flex cursor-pointer rounded-xl border-2 p-4 transition-all" :class="generationType === 'selected' ? 'border-purple-600 bg-purple-50 ring-2 ring-purple-500/20' : 'border-slate-200 hover:border-purple-400'">
+          <input type="radio" name="generation_type" value="selected" x-model="generationType" class="sr-only">
+          <div class="flex-1">
+            <div class="font-semibold" :class="generationType === 'selected' ? 'text-purple-700' : 'text-slate-800'">Selected Students</div>
+            <div class="text-sm text-slate-600">Choose specific students</div>
+          </div>
+          <svg x-show="generationType === 'selected'" class="h-5 w-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+        </label>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white p-8 shadow-lg">
+      <h2 class="text-lg font-bold text-slate-900 mb-4">Filters & Options</h2>
+      
+      <div class="space-y-6">
+        <!-- Session Filter -->
+        <div x-show="generationType === 'session'" x-cloak>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Select Session *</label>
+          <select 
+            name="session_id"
+            class="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 shadow-sm transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+          >
+            <option value="">Choose session...</option>
+            {% for session in sessions %}
+            <option value="{{ session.id }}">{{ session.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Level Filter -->
+        <div x-show="generationType === 'level'" x-cloak>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Select Level *</label>
+          <select 
+            name="level_id"
+            class="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 shadow-sm transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+          >
+            <option value="">Choose level...</option>
+            {% for level in levels %}
+            <option value="{{ level.id }}">{{ level.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Student Selection -->
+        <div x-show="generationType === 'selected'" x-cloak>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Select Students *</label>
+          <div class="max-h-64 overflow-y-auto rounded-xl border border-slate-300 p-4">
+            {% for student in students|slice:":50" %}
+            <label class="flex items-center gap-3 rounded-lg p-2 hover:bg-purple-50 cursor-pointer">
+              <input type="checkbox" name="student_ids" value="{{ student.student_id }}" class="h-4 w-4 rounded border-slate-300 text-purple-600 focus:ring-2 focus:ring-purple-500/20">
+              <span class="text-sm text-slate-700">{{ student.student_id }} - {{ student.full_name }}</span>
+            </label>
+            {% endfor %}
+          </div>
+          <p class="mt-2 text-xs text-slate-500">Showing first 50 students. Use filters for better selection.</p>
+        </div>
+
+        <!-- Layout Selection -->
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Transcript Layout</label>
+          <select 
+            name="layout"
+            class="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 shadow-sm transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+          >
+            <option value="standard">Standard</option>
+            <option value="detailed">Detailed</option>
+            <option value="official">Official</option>
+            <option value="simple">Simple</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Warning Box -->
+    <div class="rounded-xl bg-amber-50 border border-amber-200 p-4">
+      <div class="flex gap-3">
+        <svg class="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        <div class="text-sm text-amber-800">
+          <p class="font-semibold mb-1">Important Notes:</p>
+          <ul class="list-disc list-inside space-y-1">
+            <li>Batch generation may take several minutes depending on the number of students</li>
+            <li>A ZIP file will be generated containing all transcripts</li>
+            <li>Each transcript includes unique security features</li>
+            <li>All generated transcripts are logged in the database</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-4 rounded-2xl border border-slate-200/60 bg-white p-6 shadow-lg">
+      <a 
+        href="{% url 'reporting:transcript_generate' %}" 
+        class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:shadow-md active:scale-95"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back
+      </a>
+      
+      <button 
+        type="submit"
+        class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+        </svg>
+        Generate Batch Transcripts
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

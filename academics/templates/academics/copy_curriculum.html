@@ -1,0 +1,120 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Copy Curriculum | {{ target_program.code }}{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'academics:program_list' %}" class="text-slate-600 transition-colors hover:text-slate-900">Programs</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'academics:program_detail' target_program.id %}" class="text-slate-600 transition-colors hover:text-slate-900">{{ target_program.code }}</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Copy Curriculum</span>
+{% endblock %}
+
+{% block body %}
+<div class="mx-auto max-w-3xl space-y-6">
+  <!-- Header -->
+  <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-white/90 to-purple-50/50 p-8 shadow-xl backdrop-blur-xl">
+    <div class="flex items-center gap-4">
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg shadow-purple-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Copy Curriculum</h1>
+        <p class="text-sm text-slate-600">Target: {{ target_program.code }} - {{ target_program.name }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-8 shadow-xl backdrop-blur-xl">
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      
+      <!-- Source Program -->
+      <div>
+        <label for="source_program_id" class="mb-2 block text-sm font-semibold text-slate-700">
+          Copy From Program <span class="text-red-500">*</span>
+        </label>
+        <select 
+          id="source_program_id" 
+          name="source_program_id"
+          required
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+        >
+          <option value="">-- Select Source Program --</option>
+          {% for program in programs %}
+          <option value="{{ program.id }}">{{ program.code }} - {{ program.name }}</option>
+          {% endfor %}
+        </select>
+        <p class="mt-1 text-xs text-slate-500">Select the program to copy curriculum from</p>
+      </div>
+
+      <!-- Overwrite Option -->
+      <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input 
+            type="checkbox" 
+            id="overwrite" 
+            name="overwrite"
+            class="mt-1 h-5 w-5 rounded border-slate-300 text-amber-600 focus:ring-2 focus:ring-amber-500/20"
+          >
+          <div>
+            <span class="text-sm font-semibold text-slate-900">Overwrite Existing Curriculum</span>
+            <p class="mt-1 text-xs text-slate-600">If checked, all existing courses in {{ target_program.code }} will be removed before copying. Otherwise, courses will be merged.</p>
+          </div>
+        </label>
+      </div>
+
+      <!-- Warning Box -->
+      <div class="rounded-xl border border-rose-200 bg-rose-50 p-4">
+        <div class="flex gap-3">
+          <svg class="h-5 w-5 flex-shrink-0 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <div class="text-sm text-rose-800">
+            <p class="font-semibold mb-1">Important:</p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>This will copy all curriculum courses with their level, semester, and compulsory/elective status</li>
+              <li>Prerequisites are NOT copied (they are program-specific)</li>
+              <li>If overwrite is selected, all current curriculum will be permanently deleted</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-between gap-4 border-t border-slate-200 pt-6">
+        <a 
+          href="{% url 'academics:program_detail' target_program.id %}" 
+          class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Cancel
+        </a>
+        
+        <button 
+          type="submit"
+          onclick="return confirm('Are you sure you want to copy the curriculum? This action cannot be undone.')"
+          class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition-all hover:scale-105 hover:shadow-xl"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+          </svg>
+          Copy Curriculum
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

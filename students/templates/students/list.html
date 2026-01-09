@@ -1,0 +1,202 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Students | College Portal{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Students</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">Students</h1>
+      <p class="mt-1 text-sm text-slate-600">Manage student records and academic information</p>
+    </div>
+    
+    {% if is_admin or is_data_entry %}
+    <div class="flex items-center gap-3">
+      <a href="{% url 'students:import' %}" class="inline-flex items-center gap-2 rounded-xl border border-blue-300 bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-2.5 text-sm font-semibold text-blue-700 shadow-sm transition-all hover:shadow-md hover:scale-105 active:scale-95">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+        </svg>
+        Import
+      </a>
+      <a href="{% url 'students:bulk_assign_program' %}" class="inline-flex items-center gap-2 rounded-xl border border-rose-300 bg-gradient-to-r from-rose-50 to-pink-50 px-4 py-2.5 text-sm font-semibold text-rose-700 shadow-sm transition-all hover:shadow-md hover:scale-105 active:scale-95">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        </svg>
+        Assign Program
+      </a>
+      <a href="{% url 'students:promote' %}" class="inline-flex items-center gap-2 rounded-xl border border-emerald-300 bg-gradient-to-r from-emerald-50 to-teal-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 shadow-sm transition-all hover:shadow-md hover:scale-105 active:scale-95">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+        </svg>
+        Promote
+      </a>
+      <a href="{% url 'students:create' %}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/30 transition-all hover:shadow-xl hover:scale-105 active:scale-95">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Add Student
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+    <form method="get" class="space-y-4">
+      <div class="grid gap-4 md:grid-cols-4">
+        <!-- Search -->
+        <div class="md:col-span-2">
+          <label class="block text-sm font-semibold text-slate-700 mb-2">Search</label>
+          <input 
+            type="text" 
+            name="search" 
+            value="{{ search_query }}"
+            placeholder="Student ID, name, or email..."
+            class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+          />
+        </div>
+        
+        <!-- Program Filter -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">Program</label>
+          <select name="program" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-800 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10">
+            <option value="">All Programs</option>
+            {% for program in programs %}
+            <option value="{{ program.id }}" {% if request.GET.program == program.id|stringformat:"s" %}selected{% endif %}>{{ program.code }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <!-- Level Filter -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">Level</label>
+          <select name="level" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-800 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10">
+            <option value="">All Levels</option>
+            {% for level in levels %}
+            <option value="{{ level.id }}" {% if request.GET.level == level.id|stringformat:"s" %}selected{% endif %}>{{ level.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-xl hover:scale-105">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          Search
+        </button>
+        <a href="{% url 'students:list' %}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50">
+          Clear
+        </a>
+        <div class="ml-auto text-sm text-slate-600">
+          <strong>{{ total_count }}</strong> students found
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Students Table -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 shadow-xl backdrop-blur-xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Student ID</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Name</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Program</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Level</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Session</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-600">CGPA</th>
+            <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-600">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for student in page_obj %}
+          <tr class="hover:bg-blue-50/50 transition-colors">
+            <td class="px-6 py-4 text-sm font-mono font-semibold text-slate-900">{{ student.student_id }}</td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                {% if student.photo %}
+                <img src="{{ student.photo.url }}" alt="{{ student.full_name }}" class="h-10 w-10 rounded-full object-cover border-2 border-slate-200">
+                {% else %}
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-purple-600 text-sm font-bold text-white">
+                  {{ student.first_name|slice:":1" }}{{ student.last_name|slice:":1" }}
+                </div>
+                {% endif %}
+                <div>
+                  <div class="font-semibold text-slate-900">{{ student.full_name }}</div>
+                  <div class="text-xs text-slate-500">{{ student.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-sm text-slate-700">{{ student.program.code|default:"-" }}</td>
+            <td class="px-6 py-4 text-sm text-slate-700">{{ student.current_level.name|default:"-" }}</td>
+            <td class="px-6 py-4 text-sm text-slate-700">{{ student.current_session.name|default:"-" }}</td>
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center rounded-lg bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-700">
+                {{ student.cgpa|default:"0.00" }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <a href="{% url 'students:detail' student.id %}" class="rounded-lg p-2 text-blue-600 hover:bg-blue-100 transition" title="View Details">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                </a>
+                {% if is_admin or is_data_entry %}
+                <a href="{% url 'students:edit' student.id %}" class="rounded-lg p-2 text-amber-600 hover:bg-amber-100 transition" title="Edit">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                </a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="px-6 py-12 text-center">
+              <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+              <p class="mt-4 text-sm text-slate-500">No students found</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="border-t border-slate-200 bg-slate-50 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-slate-600">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </div>
+        <div class="flex items-center gap-2">
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Previous</a>
+          {% endif %}
+          {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Next</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+

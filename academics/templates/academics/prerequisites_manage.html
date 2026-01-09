@@ -1,0 +1,317 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Manage Prerequisites | {{ program.code }}{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'academics:program_list' %}" class="text-slate-600 transition-colors hover:text-slate-900">Programs</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'academics:program_detail' program.id %}" class="text-slate-600 transition-colors hover:text-slate-900">{{ program.code }}</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Prerequisites</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-8" x-data="{ showAddForm: false }">
+  <!-- Page Header -->
+  <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-white/90 to-rose-50/50 p-8 shadow-xl backdrop-blur-xl">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-rose-700 to-pink-600 bg-clip-text text-transparent">
+          Manage Prerequisites
+        </h1>
+        <p class="mt-2 text-slate-600 font-medium">{{ program.code }} - {{ program.name }}</p>
+      </div>
+      <div class="hidden sm:flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-600 to-pink-600 shadow-xl shadow-rose-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New Prerequisite -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-lg">
+    <button 
+      @click="showAddForm = !showAddForm"
+      class="w-full flex items-center justify-between text-left"
+    >
+      <h2 class="text-lg font-bold text-slate-900">Add New Prerequisite</h2>
+      <svg class="h-5 w-5 text-slate-400 transition-transform" :class="{ 'rotate-180': showAddForm }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </button>
+    
+    <form method="post" action="{% url 'academics:prerequisite_add' program.id %}" x-show="showAddForm" x-cloak class="mt-6 space-y-6">
+      {% csrf_token %}
+      
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Course -->
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Course *</label>
+          <select 
+            name="course_id" 
+            required
+            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition-all focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20"
+          >
+            <option value="">Select course</option>
+            {% for cc in program.curriculum_courses.all %}
+            <option value="{{ cc.course.id }}">{{ cc.course.code }} - {{ cc.course.title }}</option>
+            {% endfor %}
+          </select>
+          <p class="mt-1 text-xs text-slate-500">The course that requires a prerequisite</p>
+        </div>
+
+        <!-- Prerequisite Course -->
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Prerequisite Course *</label>
+          <select 
+            name="prerequisite_course_id" 
+            required
+            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition-all focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20"
+          >
+            <option value="">Select prerequisite</option>
+            {% for cc in program.curriculum_courses.all %}
+            <option value="{{ cc.course.id }}">{{ cc.course.code }} - {{ cc.course.title }}</option>
+            {% endfor %}
+          </select>
+          <p class="mt-1 text-xs text-slate-500">The course that must be completed first</p>
+        </div>
+      </div>
+
+      <button 
+        type="submit"
+        class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/30 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Add Prerequisite
+      </button>
+    </form>
+  </div>
+
+  <!-- Visual Prerequisite Graph -->
+  {% if prerequisites %}
+  <div class="rounded-2xl border border-slate-200/60 bg-white shadow-lg overflow-hidden">
+    <div class="border-b border-slate-200 bg-gradient-to-r from-indigo-50 to-purple-50 px-6 py-4">
+      <h2 class="text-lg font-bold text-slate-900">Prerequisite Chain Visualization</h2>
+    </div>
+    
+    <div class="p-6">
+      <div id="prereq-graph" class="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 p-8 min-h-[400px]" x-data="prerequisiteGraph()" x-init="init()">
+        <!-- Graph will be rendered here -->
+      </div>
+      
+      <div class="mt-4 flex items-center gap-4 text-xs text-slate-600">
+        <div class="flex items-center gap-2">
+          <div class="h-3 w-3 rounded-full bg-indigo-500"></div>
+          <span>Course</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="h-0.5 w-8 bg-slate-400"></div>
+          <svg class="h-3 w-3 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          <span>Requires</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Prerequisites List -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white shadow-lg overflow-hidden">
+    <div class="border-b border-slate-200 bg-gradient-to-r from-rose-50 to-pink-50 px-6 py-4">
+      <h2 class="text-lg font-bold text-slate-900">Current Prerequisites</h2>
+    </div>
+
+    {% if prerequisites %}
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Course</th>
+            <th class="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider text-slate-700">Requires</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Prerequisite</th>
+            <th class="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 bg-white">
+          {% for prereq in prerequisites %}
+          <tr class="transition-colors hover:bg-rose-50/30">
+            <td class="whitespace-nowrap px-6 py-4">
+              <div>
+                <div class="font-mono text-sm font-bold text-slate-800">{{ prereq.course.code }}</div>
+                <div class="text-xs text-slate-500">{{ prereq.course.title|truncatewords:5 }}</div>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <svg class="mx-auto h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+              </svg>
+            </td>
+            <td class="whitespace-nowrap px-6 py-4">
+              <div>
+                <div class="font-mono text-sm font-bold text-slate-800">{{ prereq.prerequisite_course.code }}</div>
+                <div class="text-xs text-slate-500">{{ prereq.prerequisite_course.title|truncatewords:5 }}</div>
+              </div>
+            </td>
+            <td class="whitespace-nowrap px-6 py-4 text-right">
+              <form method="post" action="{% url 'academics:prerequisite_remove' program.id prereq.id %}" class="inline">
+                {% csrf_token %}
+                <button 
+                  type="submit"
+                  onclick="return confirm('Remove this prerequisite relationship?')"
+                  class="inline-flex items-center gap-1 rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 transition-all hover:bg-red-100 active:scale-95"
+                >
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                  Remove
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="p-12 text-center">
+      <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+      </svg>
+      <p class="mt-4 text-sm text-slate-500">No prerequisites defined for this program</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Back Button -->
+  <div class="flex justify-start">
+    <a 
+      href="{% url 'academics:program_detail' program.id %}" 
+      class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:shadow-md active:scale-95"
+    >
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      Back to Program
+    </a>
+  </div>
+</div>
+
+<script>
+function prerequisiteGraph() {
+  return {
+    graphData: {{ graph_json|safe }},
+    
+    init() {
+      this.renderGraph();
+    },
+    
+    renderGraph() {
+      const container = document.getElementById('prereq-graph');
+      container.innerHTML = '';
+      
+      if (!this.graphData || this.graphData.length === 0) {
+        container.innerHTML = '<div class="text-center text-slate-400">No courses in curriculum</div>';
+        return;
+      }
+      
+      // Build adjacency map
+      const courseMap = {};
+      this.graphData.forEach(course => {
+        courseMap[course.id] = course;
+      });
+      
+      // Find courses with no prerequisites (starting points)
+      const roots = this.graphData.filter(c => c.prerequisites.length === 0);
+      
+      // Create levels (topological sort)
+      const levels = [];
+      const visited = new Set();
+      const inProgress = new Set();
+      
+      const visit = (courseId, level = 0) => {
+        if (inProgress.has(courseId)) return; // Cycle detection
+        if (visited.has(courseId)) return;
+        
+        inProgress.add(courseId);
+        const course = courseMap[courseId];
+        
+        if (course) {
+          // Visit prerequisites first
+          course.prerequisites.forEach(prereqId => {
+            visit(prereqId, level + 1);
+          });
+          
+          if (!levels[level]) levels[level] = [];
+          levels[level].push(course);
+          visited.add(courseId);
+        }
+        
+        inProgress.delete(courseId);
+      };
+      
+      // Start from all courses
+      this.graphData.forEach(course => visit(course.id));
+      
+      // Render
+      const html = levels.reverse().map((levelCourses, levelIdx) => {
+        const coursesHtml = levelCourses.map(course => {
+          const hasPrereqs = course.prerequisites.length > 0;
+          return `
+            <div class="flex flex-col items-center">
+              <div class="group relative rounded-xl border-2 border-indigo-300 bg-white px-4 py-3 shadow-md hover:shadow-lg transition-all hover:scale-105 cursor-pointer min-w-[140px]">
+                <div class="text-center">
+                  <div class="font-mono text-sm font-bold text-indigo-700">${course.code}</div>
+                  <div class="text-xs text-slate-600 mt-1 line-clamp-2">${course.title}</div>
+                </div>
+                ${hasPrereqs ? `
+                  <div class="mt-2 flex justify-center">
+                    <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                  </div>
+                ` : ''}
+                <!-- Tooltip -->
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
+                  <div class="bg-slate-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap">
+                    ${course.title}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        return `
+          <div class="flex flex-col items-center gap-4">
+            <div class="flex items-center justify-center gap-6 flex-wrap">
+              ${coursesHtml}
+            </div>
+            ${levelIdx < levels.length - 1 ? `
+              <div class="flex items-center gap-2 text-slate-400">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+      
+      container.innerHTML = html || '<div class="text-center text-slate-400">No prerequisite relationships</div>';
+    }
+  };
+}
+</script>
+{% endblock %}
+

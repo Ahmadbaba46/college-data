@@ -1,0 +1,217 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Import Courses | Courses{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'courses:list' %}" class="text-slate-500 hover:text-slate-900 transition">Courses</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Import Courses</span>
+{% endblock %}
+
+{% block body %}
+<div class="mx-auto max-w-4xl space-y-6">
+  <!-- Import Form Card -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-8 shadow-xl backdrop-blur-xl">
+    <div class="mb-6 flex items-center gap-4">
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 shadow-lg shadow-emerald-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Import Courses</h1>
+        <p class="text-sm text-slate-600">Upload a CSV, Excel, or JSON file to bulk import courses</p>
+      </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+      
+      <!-- File Upload -->
+      <div>
+        <label for="import_file" class="mb-2 block text-sm font-semibold text-slate-700">
+          Select File <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="file" 
+          id="import_file" 
+          name="import_file" 
+          accept=".csv,.xlsx,.xls,.json"
+          required
+          class="block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-emerald-700 hover:file:bg-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+        >
+        <p class="mt-1 text-xs text-slate-500">Supported formats: CSV, Excel (.xlsx, .xls), JSON</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-between gap-4 border-t border-slate-200 pt-6">
+        <a 
+          href="{% url 'courses:list' %}" 
+          class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Cancel
+        </a>
+        
+        <button 
+          type="submit"
+          class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:scale-105 hover:shadow-xl"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          Import Courses
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Format Guide Card -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-8 shadow-xl backdrop-blur-xl">
+    <h2 class="mb-4 text-lg font-bold text-slate-900">File Format Guide</h2>
+    
+    <div class="space-y-6">
+      <!-- CSV/Excel Format -->
+      <div>
+        <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-700">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          CSV/Excel Format
+        </h3>
+        <p class="mb-2 text-sm text-slate-600">Your file should have the following columns:</p>
+        <div class="overflow-x-auto rounded-lg border border-slate-200">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 text-left">
+              <tr>
+                <th class="px-4 py-2 font-semibold text-slate-700">Column</th>
+                <th class="px-4 py-2 font-semibold text-slate-700">Required</th>
+                <th class="px-4 py-2 font-semibold text-slate-700">Description</th>
+                <th class="px-4 py-2 font-semibold text-slate-700">Example</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="px-4 py-2 font-mono text-xs text-emerald-600">code</td>
+                <td class="px-4 py-2"><span class="rounded bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">Yes</span></td>
+                <td class="px-4 py-2 text-slate-600">Unique course code</td>
+                <td class="px-4 py-2 font-mono text-xs text-slate-500">CSC101</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2 font-mono text-xs text-emerald-600">title</td>
+                <td class="px-4 py-2"><span class="rounded bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">Yes</span></td>
+                <td class="px-4 py-2 text-slate-600">Course title</td>
+                <td class="px-4 py-2 font-mono text-xs text-slate-500">Introduction to Computer Science</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2 font-mono text-xs text-emerald-600">units</td>
+                <td class="px-4 py-2"><span class="rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">No</span></td>
+                <td class="px-4 py-2 text-slate-600">Credit units (default: 3)</td>
+                <td class="px-4 py-2 font-mono text-xs text-slate-500">3</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2 font-mono text-xs text-emerald-600">default_semester</td>
+                <td class="px-4 py-2"><span class="rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">No</span></td>
+                <td class="px-4 py-2 text-slate-600">FIRST or SECOND</td>
+                <td class="px-4 py-2 font-mono text-xs text-slate-500">FIRST</td>
+              </tr>
+              <tr class="bg-rose-50/50">
+                <td class="px-4 py-2 font-mono text-xs text-rose-600">program_code</td>
+                <td class="px-4 py-2"><span class="rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">No</span></td>
+                <td class="px-4 py-2 text-slate-600">Link to program curriculum</td>
+                <td class="px-4 py-2 font-mono text-xs text-slate-500">CS</td>
+              </tr>
+              <tr class="bg-rose-50/50">
+                <td class="px-4 py-2 font-mono text-xs text-rose-600">level</td>
+                <td class="px-4 py-2"><span class="rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">No</span></td>
+                <td class="px-4 py-2 text-slate-600">Level name (with program_code)</td>
+                <td class="px-4 py-2 font-mono text-xs text-slate-500">100 Level</td>
+              </tr>
+              <tr class="bg-rose-50/50">
+                <td class="px-4 py-2 font-mono text-xs text-rose-600">semester</td>
+                <td class="px-4 py-2"><span class="rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">No</span></td>
+                <td class="px-4 py-2 text-slate-600">FIRST, SECOND, or SUMMER</td>
+                <td class="px-4 py-2 font-mono text-xs text-slate-500">FIRST</td>
+              </tr>
+              <tr class="bg-rose-50/50">
+                <td class="px-4 py-2 font-mono text-xs text-rose-600">is_compulsory</td>
+                <td class="px-4 py-2"><span class="rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">No</span></td>
+                <td class="px-4 py-2 text-slate-600">yes/no or true/false</td>
+                <td class="px-4 py-2 font-mono text-xs text-slate-500">yes</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CSV Example -->
+      <div>
+        <h3 class="mb-2 text-sm font-semibold text-slate-700">CSV Example (Basic):</h3>
+        <div class="rounded-lg bg-slate-900 p-4">
+          <pre class="text-xs text-emerald-400"><code>code,title,units,default_semester
+CSC101,Introduction to Computer Science,3,FIRST
+CSC102,Data Structures,3,SECOND
+MTH101,Calculus I,4,FIRST</code></pre>
+        </div>
+      </div>
+
+      <!-- CSV Example with Program Linking -->
+      <div>
+        <h3 class="mb-2 text-sm font-semibold text-slate-700">CSV Example (With Program Linking):</h3>
+        <div class="rounded-lg bg-slate-900 p-4">
+          <pre class="text-xs text-emerald-400"><code>code,title,units,default_semester,program_code,level,semester,is_compulsory
+CSC101,Introduction to Computer Science,3,FIRST,CS,100 Level,FIRST,yes
+CSC102,Data Structures,3,SECOND,CS,100 Level,SECOND,yes
+MTH101,Calculus I,4,FIRST,CS,100 Level,FIRST,no</code></pre>
+        </div>
+      </div>
+
+      <!-- JSON Example -->
+      <div>
+        <h3 class="mb-2 text-sm font-semibold text-slate-700">JSON Example:</h3>
+        <div class="rounded-lg bg-slate-900 p-4">
+          <pre class="text-xs text-emerald-400"><code>[
+  {
+    "code": "CSC101",
+    "title": "Introduction to Computer Science",
+    "units": 3,
+    "default_semester": "FIRST"
+  },
+  {
+    "code": "CSC102",
+    "title": "Data Structures",
+    "units": 3,
+    "default_semester": "SECOND"
+  }
+]</code></pre>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="rounded-lg bg-blue-50 p-4">
+        <div class="flex gap-3">
+          <svg class="h-5 w-5 flex-shrink-0 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <div class="text-sm text-blue-900">
+            <p class="font-semibold">Important Notes:</p>
+            <ul class="mt-1 list-inside list-disc space-y-1 text-blue-800">
+              <li>If a course with the same code exists, it will be updated</li>
+              <li>Course codes are case-sensitive and must be unique</li>
+              <li>Default semester values: FIRST or SECOND (optional)</li>
+              <li>Units must be a positive integer (defaults to 3 if not specified)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

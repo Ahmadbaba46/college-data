@@ -1,0 +1,177 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Enrollment Analytics | Analytics{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'analytics:overview' %}" class="text-slate-500 hover:text-slate-900 transition">Analytics</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Enrollments</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">Enrollment Analytics</h1>
+      <p class="mt-1 text-sm text-slate-600">Track enrollment trends and patterns</p>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="text-right">
+        <p class="text-sm text-slate-600">Total Enrollments</p>
+        <p class="text-3xl font-bold text-indigo-600">{{ total_enrollments }}</p>
+      </div>
+      <a href="{% url 'analytics:export_enrollments' %}" class="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 shadow-sm transition-all hover:bg-emerald-100 hover:shadow-md">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        Export CSV
+      </a>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="grid gap-6 lg:grid-cols-2">
+    <!-- Enrollments by Session -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Enrollments by Session</h2>
+      <div class="relative" style="height: 300px;">
+        <canvas id="sessionChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Enrollments by Level -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Enrollments by Level</h2>
+      <div class="relative" style="height: 300px;">
+        <canvas id="levelChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Tables Row -->
+  <div class="grid gap-6 lg:grid-cols-2">
+    <!-- Top Courses -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Most Enrolled Courses</h2>
+      <div class="space-y-2">
+        {% for course in top_courses %}
+        <div class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div class="flex-1">
+            <span class="font-mono text-sm font-bold text-indigo-600">{{ course.course_offering__course__code }}</span>
+            <p class="text-xs text-slate-600">{{ course.course_offering__course__title|truncatewords:5 }}</p>
+          </div>
+          <span class="rounded-lg bg-indigo-100 px-3 py-1 text-sm font-semibold text-indigo-700">{{ course.count }}</span>
+        </div>
+        {% empty %}
+        <p class="text-center text-sm text-slate-500">No enrollment data</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Enrollment by Semester -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Enrollment by Semester</h2>
+      <div class="space-y-3">
+        {% for sem in enrollments_by_semester %}
+        <div class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <span class="font-medium text-slate-700">
+            {% if sem.course_offering__semester == 'FIRST' %}First Semester
+            {% elif sem.course_offering__semester == 'SECOND' %}Second Semester
+            {% elif sem.course_offering__semester == 'SUMMER' %}Summer
+            {% else %}Unknown{% endif %}
+          </span>
+          <span class="rounded-lg bg-purple-100 px-3 py-1.5 text-sm font-semibold text-purple-700">{{ sem.count }}</span>
+        </div>
+        {% empty %}
+        <p class="text-center text-sm text-slate-500">No data</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+    <h2 class="mb-4 text-lg font-bold text-slate-900">Recent Enrollments</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="border-b border-slate-200 bg-slate-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Student</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Course</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Session</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Semester</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for enrollment in recent_enrollments %}
+          <tr class="hover:bg-slate-50">
+            <td class="px-4 py-3 text-sm font-medium text-slate-900">{{ enrollment.student.student_id }}</td>
+            <td class="px-4 py-3 text-sm text-slate-700">{{ enrollment.course_offering.course.code }}</td>
+            <td class="px-4 py-3 text-sm text-slate-600">{{ enrollment.course_offering.session.name }}</td>
+            <td class="px-4 py-3 text-sm text-slate-600">{{ enrollment.course_offering.get_semester_display }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="px-4 py-8 text-center text-sm text-slate-500">No enrollments yet</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Session Chart
+const sessionData = {{ enrollments_by_session|safe }};
+const sessionCtx = document.getElementById('sessionChart').getContext('2d');
+new Chart(sessionCtx, {
+  type: 'bar',
+  data: {
+    labels: sessionData.map(d => d.course_offering__session__name),
+    datasets: [{
+      label: 'Enrollments',
+      data: sessionData.map(d => d.count),
+      backgroundColor: 'rgba(99, 102, 241, 0.8)',
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true } }
+  }
+});
+
+// Level Chart
+const levelData = {{ enrollments_by_level|safe }};
+const levelCtx = document.getElementById('levelChart').getContext('2d');
+new Chart(levelCtx, {
+  type: 'doughnut',
+  data: {
+    labels: levelData.map(d => d.student__current_level__name || 'Unassigned'),
+    datasets: [{
+      data: levelData.map(d => d.count),
+      backgroundColor: [
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(16, 185, 129, 0.8)',
+        'rgba(245, 158, 11, 0.8)',
+        'rgba(239, 68, 68, 0.8)',
+        'rgba(139, 92, 246, 0.8)',
+      ]
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+  }
+});
+</script>
+{% endblock %}

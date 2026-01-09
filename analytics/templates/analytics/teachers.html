@@ -1,0 +1,173 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Teacher Analytics | Analytics{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'analytics:overview' %}" class="text-slate-500 hover:text-slate-900 transition">Analytics</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Teachers</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">Teacher Analytics</h1>
+      <p class="mt-1 text-sm text-slate-600">Faculty workload and performance metrics</p>
+    </div>
+    <a href="{% url 'analytics:export_teachers' %}" class="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 shadow-sm transition-all hover:bg-emerald-100 hover:shadow-md">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+      </svg>
+      Export CSV
+    </a>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="grid gap-6 md:grid-cols-3">
+    <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-violet-50 to-purple-50 p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-600">Total Teachers</p>
+          <p class="mt-2 text-3xl font-bold text-violet-700">{{ total_teachers }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-600 shadow-lg">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-emerald-50 to-teal-50 p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-600">Active Teachers</p>
+          <p class="mt-2 text-3xl font-bold text-emerald-700">{{ active_teachers }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 shadow-lg">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-amber-50 to-orange-50 p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-600">Departments</p>
+          <p class="mt-2 text-3xl font-bold text-amber-700">{{ teachers_by_dept|length }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-600 shadow-lg">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workload & Performance -->
+  <div class="grid gap-6 lg:grid-cols-2">
+    <!-- Teacher Workload -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Teacher Workload (Course Assignments)</h2>
+      <div class="space-y-2">
+        {% for teacher in teacher_workload %}
+        <div class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div>
+            <span class="font-medium text-slate-900">{{ teacher.full_name }}</span>
+            <p class="text-xs text-slate-500">{{ teacher.staff_id }}</p>
+          </div>
+          <span class="rounded-lg bg-violet-100 px-3 py-1.5 text-sm font-semibold text-violet-700">{{ teacher.course_count }} course{{ teacher.course_count|pluralize }}</span>
+        </div>
+        {% empty %}
+        <p class="text-center text-sm text-slate-500">No course assignments</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Grade Statistics -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Teacher Pass Rates</h2>
+      <div class="space-y-3">
+        {% for stat in teacher_grade_stats %}
+        <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div class="mb-2 flex items-center justify-between">
+            <div>
+              <span class="font-medium text-slate-900">{{ stat.teacher.full_name }}</span>
+              <p class="text-xs text-slate-500">{{ stat.total_grades }} grade{{ stat.total_grades|pluralize }}</p>
+            </div>
+            <span class="text-lg font-bold {% if stat.pass_rate >= 70 %}text-emerald-600{% elif stat.pass_rate >= 50 %}text-amber-600{% else %}text-red-600{% endif %}">
+              {{ stat.pass_rate }}%
+            </span>
+          </div>
+          <div class="h-2 w-full rounded-full bg-slate-200">
+            <div class="h-2 rounded-full {% if stat.pass_rate >= 70 %}bg-emerald-500{% elif stat.pass_rate >= 50 %}bg-amber-500{% else %}bg-red-500{% endif %}" style="width: {{ stat.pass_rate }}%"></div>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-sm text-slate-500">No grading data available</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Teachers by Department -->
+  {% if teachers_by_dept %}
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+    <h2 class="mb-4 text-lg font-bold text-slate-900">Teachers by Department</h2>
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {% for dept in teachers_by_dept %}
+      <div class="rounded-lg border border-slate-200 bg-gradient-to-r from-purple-50 to-pink-50 p-4">
+        <div class="flex items-center justify-between">
+          <span class="font-semibold text-slate-900">{{ dept.department }}</span>
+          <span class="rounded-lg bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-700">{{ dept.count }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Recent Offerings by Teacher -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+    <h2 class="mb-4 text-lg font-bold text-slate-900">Course Offerings by Teacher</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="border-b border-slate-200 bg-slate-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Rank</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Staff ID</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Teacher</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Offerings</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for teacher in teacher_offerings %}
+          <tr class="hover:bg-violet-50">
+            <td class="px-4 py-3 text-sm font-bold text-violet-600">{{ forloop.counter }}</td>
+            <td class="px-4 py-3 text-sm font-medium text-slate-900">{{ teacher.teacher__staff_id }}</td>
+            <td class="px-4 py-3 text-sm text-slate-700">{{ teacher.teacher__first_name }} {{ teacher.teacher__last_name }}</td>
+            <td class="px-4 py-3">
+              <span class="rounded-lg bg-indigo-100 px-3 py-1 text-sm font-semibold text-indigo-700">{{ teacher.offering_count }}</span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="px-4 py-8 text-center text-sm text-slate-500">No offering assignments</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+<div class="space-y-3">
+  {% for activity in activities %}
+  <div class="flex items-start gap-3 rounded-xl border border-slate-200/60 bg-gradient-to-br from-white to-slate-50/50 p-4 transition hover:shadow-md">
+    <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg {{ activity.color_class }} shadow-md">
+      {{ activity.icon|safe }}
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-sm font-semibold text-slate-900">{{ activity.title }}</p>
+      <p class="text-xs text-slate-600 mt-0.5">{{ activity.description }}</p>
+      <p class="text-xs text-slate-400 mt-1">{{ activity.timestamp }}</p>
+    </div>
+  </div>
+  {% empty %}
+  <div class="rounded-xl border border-slate-200/60 bg-slate-50 p-6 text-center">
+    <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+    </svg>
+    <p class="mt-2 text-sm text-slate-500">No recent activity</p>
+  </div>
+  {% endfor %}
+</div>

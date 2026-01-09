@@ -1,0 +1,18 @@
+[
+    {
+        "first_name": "Dorothy",
+        "last_name": "Vaughan",
+        "student_id": "DV001",
+        "entry_level_id": 1,
+        "current_level_id": 1,
+        "current_session_id": 2
+    },
+    {
+        "first_name": "Mary",
+        "last_name": "Jackson",
+        "student_id": "MJ001",
+        "entry_level_id": 1,
+        "current_level_id": 1,
+        "current_session_id": 2
+    }
+]

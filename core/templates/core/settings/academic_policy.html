@@ -1,0 +1,100 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Academic Policy | Settings{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Academic Policy</span>
+{% endblock %}
+
+{% block body %}
+<div class="mx-auto max-w-4xl space-y-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-bold text-slate-900">Academic Policy Settings</h1>
+    <p class="mt-1 text-sm text-slate-600">Configure academic rules and policies</p>
+  </div>
+
+  <!-- Settings Form -->
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
+    
+    <!-- Repeat Policy Card -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <svg class="h-5 w-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        Course Repeat Policy
+      </h2>
+      
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-slate-700 mb-1">Repeat Policy (CGPA/GPA)</label>
+          <select name="repeat_policy"
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-slate-900 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+            {% for value,label in repeat_policy_choices %}
+            <option value="{{ value }}" {% if policy.repeat_policy == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <p class="mt-1 text-xs text-slate-500">Controls how repeated course attempts are counted in GPA/CGPA calculations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approval Workflow Card -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        Approval Enforcement
+      </h2>
+
+      <div class="space-y-4">
+        <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <input type="checkbox" id="require_approved_for_transcripts" name="require_approved_for_transcripts"
+            {% if policy.require_approved_for_transcripts %}checked{% endif %}
+            class="h-5 w-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+          <div>
+            <label for="require_approved_for_transcripts" class="block text-sm font-semibold text-slate-700">Require Approved Grades for Transcripts</label>
+            <p class="text-xs text-slate-500">If enabled, only approved grades count in transcripts (removes unapproved from GPA/CGPA).</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <input type="checkbox" id="require_approved_for_exports" name="require_approved_for_exports"
+            {% if policy.require_approved_for_exports %}checked{% endif %}
+            class="h-5 w-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+          <div>
+            <label for="require_approved_for_exports" class="block text-sm font-semibold text-slate-700">Require Approved Grades for Exports</label>
+            <p class="text-xs text-slate-500">If enabled, grade exports only include approved grades.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <input type="checkbox" id="require_approved_for_metrics" name="require_approved_for_metrics"
+            {% if policy.require_approved_for_metrics %}checked{% endif %}
+            class="h-5 w-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+          <div>
+            <label for="require_approved_for_metrics" class="block text-sm font-semibold text-slate-700">Require Approved Grades for Metrics</label>
+            <p class="text-xs text-slate-500">If enabled, dashboards/metrics/GPA calculations ignore unapproved grades.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <div class="flex justify-end">
+      <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/30 transition-all hover:shadow-xl hover:scale-105">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        Save Policy
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Edit Offering | {{ course.code }}{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'courses:list' %}" class="text-slate-500 hover:text-slate-900 transition">Courses</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'courses:detail' course.id %}" class="text-slate-500 hover:text-slate-900 transition">{{ course.code }}</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Edit Offering</span>
+{% endblock %}
+
+{% block body %}
+<div class="mx-auto max-w-3xl">
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-8 shadow-xl backdrop-blur-xl">
+    <!-- Header -->
+    <div class="mb-6 flex items-center gap-4">
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 shadow-lg shadow-emerald-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Edit Course Offering</h1>
+        <p class="text-sm text-slate-600">{{ course.code }} - {{ course.title }}</p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      
+      <!-- Session -->
+      <div>
+        <label for="session" class="mb-2 block text-sm font-semibold text-slate-700">
+          Session <span class="text-red-500">*</span>
+        </label>
+        <select 
+          id="session" 
+          name="session"
+          required
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+        >
+          <option value="">-- Select Session --</option>
+          {% for session in sessions %}
+          <option value="{{ session.id }}" {% if session.id == offering.session.id %}selected{% endif %}>{{ session.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Semester -->
+      <div>
+        <label for="semester" class="mb-2 block text-sm font-semibold text-slate-700">
+          Semester <span class="text-red-500">*</span>
+        </label>
+        <select 
+          id="semester" 
+          name="semester"
+          required
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+        >
+          <option value="">-- Select Semester --</option>
+          <option value="FIRST" {% if offering.semester == 'FIRST' %}selected{% endif %}>First Semester</option>
+          <option value="SECOND" {% if offering.semester == 'SECOND' %}selected{% endif %}>Second Semester</option>
+          <option value="SUMMER" {% if offering.semester == 'SUMMER' %}selected{% endif %}>Summer</option>
+        </select>
+      </div>
+
+      <!-- Level (Optional) -->
+      <div>
+        <label for="level" class="mb-2 block text-sm font-semibold text-slate-700">
+          Level (Optional)
+        </label>
+        <select 
+          id="level" 
+          name="level"
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+        >
+          <option value="">-- No Specific Level --</option>
+          {% for level in levels %}
+          <option value="{{ level.id }}" {% if offering.level and level.id == offering.level.id %}selected{% endif %}>{{ level.name }}</option>
+          {% endfor %}
+        </select>
+        <p class="mt-1 text-xs text-slate-500">Optional: Restrict this offering to a specific level</p>
+      </div>
+
+      <!-- Teacher -->
+      <div>
+        <label for="teacher" class="mb-2 block text-sm font-semibold text-slate-700">
+          Assigned Teacher
+        </label>
+        <select 
+          id="teacher" 
+          name="teacher"
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+        >
+          <option value="">-- No Teacher Assigned --</option>
+          {% for teacher in teachers %}
+          <option value="{{ teacher.id }}" {% if offering.teacher_id == teacher.id %}selected{% endif %}>{{ teacher.full_name }} ({{ teacher.staff_id }})</option>
+          {% endfor %}
+        </select>
+        <p class="mt-1 text-xs text-slate-500">Teacher responsible for this offering</p>
+      </div>
+
+      <!-- Capacity (Optional) -->
+      <div>
+        <label for="capacity" class="mb-2 block text-sm font-semibold text-slate-700">
+          Capacity (Optional)
+        </label>
+        <input 
+          type="number" 
+          id="capacity" 
+          name="capacity" 
+          value="{{ offering.capacity|default:'' }}"
+          min="1"
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          placeholder="Leave blank for unlimited"
+        >
+        <p class="mt-1 text-xs text-slate-500">Maximum number of students for this offering</p>
+      </div>
+
+      <!-- Is Active -->
+      <div class="flex items-center gap-3">
+        <input 
+          type="checkbox" 
+          id="is_active" 
+          name="is_active" 
+          {% if offering.is_active %}checked{% endif %}
+          class="h-5 w-5 rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
+        >
+        <label for="is_active" class="text-sm font-medium text-slate-700">
+          Active (students can enroll)
+        </label>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-between gap-4 border-t border-slate-200 pt-6">
+        <a 
+          href="{% url 'courses:detail' course.id %}" 
+          class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Cancel
+        </a>
+        
+        <button 
+          type="submit"
+          class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:scale-105 hover:shadow-xl"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,222 @@
+Web App Build Tracking (Django + HTMX + Tailwind v4)
+=====================================================
+Style: Modern gradient SaaS + college theme
+Roles: Admin / DataEntry / Teacher (Teacher limited to assigned courses)
+
+Status Legend: [ ] Not started  [~] In progress  [x] Done
+
+PHASE 1 — Web foundation & UI system
+-----------------------------------
+[x] Tailwind v4 build pipeline (Vite or PostCSS) integrated with Django staticfiles
+[x] Base layout templates (navbar/sidebar/content)
+[x] Gradient theme tokens (colors, typography, components)
+[x] Alpine.js included (UI state, modals)
+[x] HTMX included (partial updates)
+[x] Auth pages: login/logout, session protection
+[x] Role-aware navigation (Admin/Teacher/DataEntry with context processors)
+
+PHASE 2 — Enhanced Dashboard & Analytics (SEE WEBAPP_IMPLEMENTATION_PLAN.md)
+-----------------------------
+[x] Dashboard: Add enrollment statistics widget with charts
+[x] Dashboard: Add student distribution charts (by level, program)
+[x] Dashboard: Add grade distribution widget
+[x] Dashboard: Add recent activity feed
+[x] Integrate Chart.js
+[x] Dashboard: Add repeated courses alert
+[x] Dashboard: Add graduation eligibility preview
+[x] Dashboard: Teacher dashboard variant
+
+PHASE 3 — Students + Programs (SEE WEBAPP_IMPLEMENTATION_PLAN.md)
+-----------------------------
+[x] Students list page (search/filter; HTMX updates, role-based actions)
+[x] Student views with full RBAC (Admin/DataEntry can edit, all can view)
+[x] Role-based access control decorators (users/decorators.py)
+[x] Student create page (photo upload, validation) - Admin/DataEntry only
+[x] Student detail page (overview, metrics, contact, quick actions)
+[x] Student edit page - Admin/DataEntry only
+[x] Active sidebar link highlighting
+[x] Student detail tabs (overview, enrollments, academic record with grades by session)
+[x] Programs list page (all users can view) - Rose/pink gradient theme
+[x] Program detail page (curriculum courses, classification thresholds, student list)
+[x] Program create/edit UI (Admin only)
+[x] Programs navigation link with active state
+[x] Student promotion page (bulk)
+[x] Student import page (CSV/Excel/JSON)
+[x] Curriculum & prerequisites management UI (add/remove courses to program)
+[x] Program import page (CSV/Excel/JSON)
+[x] Program edit/delete buttons (list and detail pages)
+[x] Classification scheme selection dropdown
+[x] Min units to graduate field with defaults
+
+PHASE 4 — Courses + Offerings (SEE WEBAPP_IMPLEMENTATION_PLAN.md)
+------------------------------------------
+[x] Course list page (search by code/title, filter by level, semester) - Admin/DataEntry
+[x] Course detail page (info, offerings list, programs using course) - All users
+[x] Course create/edit/delete - Admin/DataEntry only
+[x] Course import with program linking (CSV/Excel/JSON)
+[x] Active link highlighting for courses
+[x] Course offering create/edit/delete UI
+[x] Quick add course to program (HTMX inline form)
+[x] Manage curriculum from course detail page
+[x] Semester filter for courses
+[x] Course offering teacher assignment (teacher dropdown in create/edit)
+
+PHASE 5 — Enrollment Management (SEE WEBAPP_IMPLEMENTATION_PLAN.md)
+------------------------------------------
+[x] Enrollment list page (search/filter by student, session, courses) - All users
+[x] Multi-select course filter (checkbox dropdown)
+[x] Bulk enrollment interface with student selection - Admin/DataEntry only
+[x] Enhanced bulk enrollment with filters (session, semester, level for offerings)
+[x] Student level filter in bulk enrollment
+[x] Real-time Alpine.js filtering (no page refresh)
+[x] Single enrollment creation - Admin/DataEntry only
+[x] Indigo/purple gradient theme
+[x] Navigation link with active state
+[x] Smart "Select All Visible" functionality
+[x] Enrollment rules engine (capacity, prerequisites, repeat limits, level checks)
+[ ] Course registration flow (for students - future)
+
+PHASE 6 — Grading + Approval workflow (SEE WEBAPP_IMPLEMENTATION_PLAN.md)
+-------------------------------------------
+[x] Teacher "My Courses & Grading" page with offerings list
+[x] Grade entry page (inline AJAX editing, auto-calculate, draft save)
+[x] Grade submission review page
+[x] Submit grades UI (teacher) - bulk submit with confirmation
+[x] Approval queue UI (admin): list all pending grouped by offering
+[x] Approval detail page: approve/reject with reason
+[x] Grade history & audit log viewer with filters
+[x] Repeated courses report page (visual report with GPA policy)
+[x] Navigation dropdowns for grading and reports
+[x] Complete workflow: Draft → Submit → Approve/Reject
+
+PHASE 7 — Transcripts + Verification (SEE WEBAPP_IMPLEMENTATION_PLAN.md)
+------------------------------------
+[x] Transcript generation page (select student, layout, preview)
+[x] Transcript verification portal (QR scanner, manual entry) - EXISTS
+[x] Transcript history page
+[x] Batch transcript generation page
+[x] Download protection (RBAC)
+
+PHASE 8 — Analytics & Reports (SEE WEBAPP_IMPLEMENTATION_PLAN.md)
+--------------------------------
+[x] Analytics overview dashboard (key metrics, charts, trends)
+[x] Analytics navigation link with cyan theme
+[x] Enrollment analytics page (trends, top courses, recent activity)
+[x] Student analytics page (demographics, performance, GPA by level)
+[x] Grade analytics page (distribution, course difficulty, pass rates)
+[x] Teacher analytics page (workload, pass rates, department distribution)
+[x] Graduation analytics page (eligibility tracking, program completion rates)
+[x] Chart.js integration (bar, line, pie, doughnut charts)
+[x] CSV Export functionality (all 5 analytics pages)
+[x] Repeated courses report UI (already complete)
+
+PHASE 9 — System Configuration (SEE WEBAPP_IMPLEMENTATION_PLAN.md)
+--------------------------------
+[x] Sessions management (list, create, edit, delete) - Admin only
+[x] Levels management (list, create, edit, delete) - Admin only
+[x] Departments management (list, create, edit, delete) - Admin only
+[x] Navigation dropdown for Settings (expanded with all settings pages)
+[x] College settings page (name, address, logo, signatures)
+[x] Academic policy settings page (repeat policy, GPA thresholds, approval flags)
+[x] User management page (list, edit, assign roles)
+[x] Audit log viewer (filterable activity log)
+[x] Grading settings page (grade scale with CRUD)
+
+PHASE 10 — Security & Compliance (SEE WEBAPP_IMPLEMENTATION_PLAN.md)
+--------------------------------
+[x] RBAC enforcement at view level (Role/UserRole models, enhanced decorators)
+[x] Data privacy controls (security headers, cache control, DataPrivacyMiddleware)
+[x] Session management improvements (timeout, tracking, concurrent session limits)
+
+PERFORMANCE OPTIMIZATIONS (January 2026)
+----------------------------------------
+[x] CourseOffering indexes (session+semester, course+session, teacher, is_active)
+[x] Enrollment indexes (student, course_offering, enrollment_date)
+[x] Grade indexes (status, grade, total_score, submitted_at, approved_at)
+[x] GradingSettings indexes (min_score, grade_name)
+[x] Query optimization with select_related() across views
+
+Notes / Decisions
+-----------------
+- Server-rendered Django templates with HTMX for interactivity
+- Tailwind v4 for styling
+- Animations: Tailwind transitions + Alpine for state-based animations
+- Teacher scope: assigned courses only (Teacher.courses)
+
+TEACHER MANAGEMENT FEATURES (NEW)
+---------------------------------
+[x] Teacher list page (search by ID/name/dept, filter by status)
+[x] Teacher detail page (profile, stats, courses, offerings)
+[x] Teacher create/edit/delete (Admin only)
+[x] Course assignment UI (bulk assign/remove courses)
+[x] Navigation link in sidebar (violet theme)
+
+SETTINGS/CORE MANAGEMENT (NEW - PHASE 9 COMPLETE)
+-------------------------------------------------
+[x] Sessions management (list, create, edit, delete, set current)
+[x] Levels management (list, create, edit, delete) with student counts
+[x] Departments management (list, detail, create, edit, delete) with counts
+[x] Settings navigation dropdown (expanded with all settings pages)
+[x] College settings page
+[x] Academic policy settings page
+[x] Grading settings page (full CRUD with decimal support)
+[x] User management page (list, edit, role assignment)
+[x] Audit log viewer (with date filter and CSV export)
+
+MODEL IMPROVEMENTS (January 2026)
+---------------------------------
+[x] Session: Added is_current field (renamed from is_active, only one session current at a time)
+[x] Program: Added department FK to link programs to departments
+[x] Course: Added department FK to link courses to departments
+[x] Teacher: Changed department from CharField to ForeignKey (with migration)
+[x] Session UI: Current badge, Set Current button, checkbox in create/edit forms
+[x] Program UI: Department dropdown in create/edit forms, display on list/detail, filter by department
+[x] Course UI: Department dropdown in create/edit forms, display on list/detail, filter by department
+[x] Teacher UI: Department dropdown in create/edit forms, display on list, filter by department
+
+FEATURE ENHANCEMENTS (January 2026 - Latest)
+--------------------------------------------
+[x] Levels: Added student count display on level cards
+[x] Departments: Added detail page with teachers, programs, courses
+[x] Departments: Added program count and course count on list cards
+[x] Course Offerings: Added teacher column in offerings table
+[x] Enrollment: Added validation warning notice on create form
+[x] Audit Log: Added date range filter (from/to)
+[x] Audit Log: Added CSV export functionality
+[x] User Management: Fixed role display (removed invalid get_item filter)
+[x] Grading Settings: Fixed decimal grade point support
+[x] Grading Settings: Full-width table layout
+[x] Academic Policy: Fixed GPA float value saving
+
+COMPLETED IMPROVEMENTS (Latest Session - January 2026)
+---------------------------------------
+[x] Login page fixed - no sidebar/header (uses base_public.html)
+[x] Hero cards readability improved (solid backgrounds instead of gradients)
+[x] Layout selection cards visual feedback (green highlights + checkmarks)
+[x] Batch generation type selection visual feedback (purple highlights)
+[x] Program min_units_to_graduate fixed (form fields and display)
+[x] Program edit/delete buttons added to list and detail pages
+[x] Classification scheme dropdown added to program forms
+[x] Program import feature complete (CSV/Excel/JSON)
+[x] Transcript generation UI complete (3 pages)
+[x] Navigation dropdowns complete (Transcripts + Reports)
+[x] All course annotation errors fixed
+[x] All template syntax errors fixed
+[x] Repeated courses report import error fixed
+[x] Course detail level/semester display fixed (ManyToMany handling)
+[x] Semester filter added to courses list
+[x] Multi-select course filter for enrollments
+[x] Bulk student-to-program assignment feature
+[x] Course import with program linking (auto-curriculum setup)
+[x] Quick add course to program (HTMX inline)
+[x] Bulk course selection for program curriculum
+[x] Copy curriculum between programs
+[x] Visual prerequisite chain display (topological sort graph)
+[x] Course offerings management (create/edit/delete)
+[x] Navigation active states fixed (enrollments vs grade approvals)
+[x] Sidebar scrolling fixed (flex layout with proper height constraints)
+[x] Analytics navigation cards added (5 clickable cards on overview)
+[x] Chart.js height issue fixed (fixed 300px containers)
+[x] All analytics query errors fixed (5 FieldError/ImportError fixes)
+[x] Teacher management complete (list, detail, create, edit, delete)
+[x] Course assignment UI for teachers (bulk select with search)

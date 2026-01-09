@@ -1,0 +1,31 @@
+{% if is_admin %}
+<div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+  <div class="mb-4 flex items-center justify-between">
+    <div>
+      <h3 class="text-lg font-bold text-slate-900">Recent Activity</h3>
+      <p class="text-xs text-slate-500">Latest system events</p>
+    </div>
+    <button 
+      class="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition"
+      hx-get="{% url 'portal:recent_activity_partial' %}"
+      hx-target="#activity-feed"
+      hx-swap="innerHTML"
+    >
+      Refresh
+    </button>
+  </div>
+  
+  <div id="activity-feed" 
+       hx-get="{% url 'portal:recent_activity_partial' %}"
+       hx-trigger="load"
+       hx-swap="innerHTML"
+       class="space-y-3">
+    <div class="flex items-center justify-center py-8 text-sm text-slate-500">
+      <svg class="h-5 w-5 animate-spin mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+      </svg>
+      Loading activity...
+    </div>
+  </div>
+</div>
+{% endif %}

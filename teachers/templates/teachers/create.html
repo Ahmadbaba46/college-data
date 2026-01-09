@@ -1,0 +1,165 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Create Teacher | Teachers{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'teachers:list' %}" class="text-slate-500 hover:text-slate-900 transition">Teachers</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Create Teacher</span>
+{% endblock %}
+
+{% block body %}
+<div class="mx-auto max-w-3xl">
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-8 shadow-xl backdrop-blur-xl">
+    <!-- Header -->
+    <div class="mb-6 flex items-center gap-4">
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-purple-600 shadow-lg shadow-violet-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Create New Teacher</h1>
+        <p class="text-sm text-slate-600">Add a new faculty member</p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      
+      <!-- Staff ID -->
+      <div>
+        <label for="staff_id" class="mb-2 block text-sm font-semibold text-slate-700">
+          Staff ID <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="staff_id" 
+          name="staff_id" 
+          required
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+          placeholder="e.g., TCH001"
+        >
+      </div>
+
+      <!-- First Name -->
+      <div>
+        <label for="first_name" class="mb-2 block text-sm font-semibold text-slate-700">
+          First Name <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="first_name" 
+          name="first_name" 
+          required
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+          placeholder="First name"
+        >
+      </div>
+
+      <!-- Last Name -->
+      <div>
+        <label for="last_name" class="mb-2 block text-sm font-semibold text-slate-700">
+          Last Name <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="last_name" 
+          name="last_name" 
+          required
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+          placeholder="Last name"
+        >
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="mb-2 block text-sm font-semibold text-slate-700">
+          Email
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email"
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+          placeholder="email@example.com"
+        >
+      </div>
+
+      <!-- Phone -->
+      <div>
+        <label for="phone" class="mb-2 block text-sm font-semibold text-slate-700">
+          Phone
+        </label>
+        <input 
+          type="tel" 
+          id="phone" 
+          name="phone"
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+          placeholder="Phone number"
+        >
+      </div>
+
+      <!-- Department -->
+      <div>
+        <label for="department" class="mb-2 block text-sm font-semibold text-slate-700">
+          Department
+        </label>
+        <select 
+          id="department" 
+          name="department"
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+        >
+          <option value="">-- No Department --</option>
+          {% for dept in departments %}
+          <option value="{{ dept.id }}">{{ dept.name }}{% if dept.code %} ({{ dept.code }}){% endif %}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Is Active -->
+      <div class="flex items-center gap-3">
+        <input 
+          type="checkbox" 
+          id="is_active" 
+          name="is_active" 
+          checked
+          class="h-5 w-5 rounded border-slate-300 text-violet-600 focus:ring-2 focus:ring-violet-500/20"
+        >
+        <label for="is_active" class="text-sm font-medium text-slate-700">
+          Active (teacher can be assigned to courses)
+        </label>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-between gap-4 border-t border-slate-200 pt-6">
+        <a 
+          href="{% url 'teachers:list' %}" 
+          class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Cancel
+        </a>
+        
+        <button 
+          type="submit"
+          class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/30 transition-all hover:scale-105 hover:shadow-xl"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Create Teacher
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

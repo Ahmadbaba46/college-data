@@ -1,0 +1,286 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Analytics Overview | Dashboard{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Analytics</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">Analytics Overview</h1>
+      <p class="mt-1 text-sm text-slate-600">Comprehensive insights into academic performance</p>
+    </div>
+  </div>
+
+  <!-- Quick Navigation -->
+  <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+    <a href="{% url 'analytics:enrollments' %}" class="group rounded-xl border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-4 shadow-sm transition-all hover:scale-105 hover:shadow-lg">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600 shadow-md">
+          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-slate-900">Enrollments</p>
+          <p class="text-xs text-slate-600">Trends & Patterns</p>
+        </div>
+      </div>
+    </a>
+
+    <a href="{% url 'analytics:students' %}" class="group rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 shadow-sm transition-all hover:scale-105 hover:shadow-lg">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 shadow-md">
+          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-slate-900">Students</p>
+          <p class="text-xs text-slate-600">Demographics</p>
+        </div>
+      </div>
+    </a>
+
+    <a href="{% url 'analytics:grades' %}" class="group rounded-xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-4 shadow-sm transition-all hover:scale-105 hover:shadow-lg">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-600 shadow-md">
+          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-slate-900">Grades</p>
+          <p class="text-xs text-slate-600">Distribution</p>
+        </div>
+      </div>
+    </a>
+
+    <a href="{% url 'analytics:teachers' %}" class="group rounded-xl border-2 border-violet-200 bg-gradient-to-br from-violet-50 to-purple-50 p-4 shadow-sm transition-all hover:scale-105 hover:shadow-lg">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-600 shadow-md">
+          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-slate-900">Teachers</p>
+          <p class="text-xs text-slate-600">Workload</p>
+        </div>
+      </div>
+    </a>
+
+    <a href="{% url 'analytics:graduation' %}" class="group rounded-xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-4 shadow-sm transition-all hover:scale-105 hover:shadow-lg">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-600 shadow-md">
+          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-slate-900">Graduation</p>
+          <p class="text-xs text-slate-600">Eligibility</p>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Key Metrics Cards -->
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <!-- Students -->
+    <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-600">Total Students</p>
+          <p class="mt-2 text-3xl font-bold text-blue-700">{{ total_students }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 shadow-lg">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses -->
+    <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-emerald-50 to-teal-50 p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-600">Total Courses</p>
+          <p class="mt-2 text-3xl font-bold text-emerald-700">{{ total_courses }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 shadow-lg">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enrollments -->
+    <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-purple-50 to-pink-50 p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-600">Total Enrollments</p>
+          <p class="mt-2 text-3xl font-bold text-purple-700">{{ total_enrollments }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-600 shadow-lg">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pass Rate -->
+    <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-amber-50 to-orange-50 p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-600">Pass Rate</p>
+          <p class="mt-2 text-3xl font-bold text-amber-700">{{ pass_rate }}%</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-600 shadow-lg">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="grid gap-6 lg:grid-cols-2">
+    <!-- Enrollment Trend -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Enrollment Trend</h2>
+      <div class="relative" style="height: 300px;">
+        <canvas id="enrollmentTrendChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Grade Distribution -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Grade Distribution</h2>
+      <div class="relative" style="height: 300px;">
+        <canvas id="gradeDistChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Row -->
+  <div class="grid gap-6 lg:grid-cols-2">
+    <!-- Students by Level -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Students by Level</h2>
+      <div class="space-y-3">
+        {% for item in students_by_level %}
+        <div class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <span class="font-medium text-slate-700">{{ item.current_level__name|default:"Unassigned" }}</span>
+          <span class="rounded-lg bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">{{ item.count }}</span>
+        </div>
+        {% empty %}
+        <p class="text-center text-sm text-slate-500">No data available</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Students by Program -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Top Programs</h2>
+      <div class="space-y-3">
+        {% for item in students_by_program %}
+        <div class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div>
+            <span class="font-medium text-slate-700">{{ item.program__code }}</span>
+            <p class="text-xs text-slate-500">{{ item.program__name }}</p>
+          </div>
+          <span class="rounded-lg bg-rose-100 px-3 py-1 text-sm font-semibold text-rose-700">{{ item.count }}</span>
+        </div>
+        {% empty %}
+        <p class="text-center text-sm text-slate-500">No students assigned to programs</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Enrollment Trend Chart
+const enrollmentData = {{ enrollment_trend|safe }};
+const enrollmentCtx = document.getElementById('enrollmentTrendChart').getContext('2d');
+new Chart(enrollmentCtx, {
+  type: 'line',
+  data: {
+    labels: enrollmentData.map(d => d.session),
+    datasets: [{
+      label: 'Enrollments',
+      data: enrollmentData.map(d => d.count),
+      borderColor: 'rgb(99, 102, 241)',
+      backgroundColor: 'rgba(99, 102, 241, 0.1)',
+      tension: 0.4,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+
+// Grade Distribution Chart
+const gradeData = {{ grade_distribution|safe }};
+const gradeCtx = document.getElementById('gradeDistChart').getContext('2d');
+new Chart(gradeCtx, {
+  type: 'bar',
+  data: {
+    labels: gradeData.map(d => d.grade),
+    datasets: [{
+      label: 'Count',
+      data: gradeData.map(d => d.count),
+      backgroundColor: [
+        'rgba(34, 197, 94, 0.8)',
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(234, 179, 8, 0.8)',
+        'rgba(249, 115, 22, 0.8)',
+        'rgba(239, 68, 68, 0.8)',
+      ]
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0
+        }
+      }
+    }
+  }
+});
+</script>
+{% endblock %}

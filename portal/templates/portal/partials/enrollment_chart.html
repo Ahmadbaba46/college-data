@@ -1,0 +1,100 @@
+<div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+  <div class="mb-4 flex items-center justify-between">
+    <div>
+      <h3 class="text-lg font-bold text-slate-900">Enrollment Trends</h3>
+      <p class="text-xs text-slate-500">Enrollments by session</p>
+    </div>
+    <div class="flex items-center gap-2 rounded-lg bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700">
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+      </svg>
+      Live Data
+    </div>
+  </div>
+  
+  <div class="relative h-64">
+    <canvas id="enrollmentChart"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function() {
+  const ctx = document.getElementById('enrollmentChart');
+  if (!ctx) return;
+  
+  // Fetch data via HTMX endpoint
+  fetch('{% url "portal:enrollment_stats_data" %}')
+    .then(res => res.json())
+    .then(data => {
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: 'Enrollments',
+            data: data.values,
+            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+            borderColor: 'rgba(59, 130, 246, 1)',
+            borderWidth: 2,
+            borderRadius: 8,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              padding: 12,
+              borderColor: 'rgba(148, 163, 184, 0.2)',
+              borderWidth: 1,
+              titleFont: {
+                size: 14,
+                weight: 'bold'
+              },
+              bodyFont: {
+                size: 13
+              },
+              callbacks: {
+                label: function(context) {
+                  return 'Enrollments: ' + context.parsed.y;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: '#64748b',
+                font: {
+                  size: 11
+                }
+              },
+              grid: {
+                color: 'rgba(148, 163, 184, 0.1)',
+                drawBorder: false
+              }
+            },
+            x: {
+              ticks: {
+                color: '#64748b',
+                font: {
+                  size: 11
+                }
+              },
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    })
+    .catch(err => console.error('Failed to load enrollment data:', err));
+})();
+</script>

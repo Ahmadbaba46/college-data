@@ -1,0 +1,85 @@
+<div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+  <div class="mb-4">
+    <h3 class="text-lg font-bold text-slate-900">Student Distribution</h3>
+    <p class="text-xs text-slate-500">Students by level</p>
+  </div>
+  
+  <div class="relative h-64">
+    <canvas id="studentDistributionChart"></canvas>
+  </div>
+  
+  <div id="distributionLegend" class="mt-4 grid grid-cols-2 gap-2"></div>
+</div>
+
+<script>
+(function() {
+  const ctx = document.getElementById('studentDistributionChart');
+  if (!ctx) return;
+  
+  fetch('{% url "portal:student_distribution_data" %}')
+    .then(res => res.json())
+    .then(data => {
+      const colors = [
+        'rgba(99, 102, 241, 0.8)',   // Indigo
+        'rgba(139, 92, 246, 0.8)',   // Violet
+        'rgba(236, 72, 153, 0.8)',   // Pink
+        'rgba(244, 63, 94, 0.8)',    // Rose
+        'rgba(251, 146, 60, 0.8)',   // Orange
+        'rgba(34, 197, 94, 0.8)',    // Green
+        'rgba(6, 182, 212, 0.8)',    // Cyan
+      ];
+      
+      const borderColors = colors.map(c => c.replace('0.8', '1'));
+      
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            data: data.values,
+            backgroundColor: colors,
+            borderColor: borderColors,
+            borderWidth: 2,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              padding: 12,
+              borderColor: 'rgba(148, 163, 184, 0.2)',
+              borderWidth: 1,
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.parsed || 0;
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  return `${label}: ${value} (${percentage}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+      
+      // Create custom legend
+      const legendEl = document.getElementById('distributionLegend');
+      data.labels.forEach((label, i) => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center gap-2 text-sm';
+        item.innerHTML = `
+          <div class="h-3 w-3 rounded-full" style="background-color: ${colors[i]}"></div>
+          <span class="text-slate-700">${label}: <strong>${data.values[i]}</strong></span>
+        `;
+        legendEl.appendChild(item);
+      });
+    })
+    .catch(err => console.error('Failed to load student distribution:', err));
+})();
+</script>

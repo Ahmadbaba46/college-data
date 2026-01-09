@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Result - My Awesome College</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1f4788 0%, #2c5aa0 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            color: #1f4788;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .result-error {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #1f4788;
+        }
+
+        .detail-card h3 {
+            color: #1f4788;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .detail-value {
+            color: #333;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-all;
+        }
+
+        .verification-code {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            text-align: center;
+            color: #1f4788;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1f4788 0%, #2c5aa0 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .security-info {
+            background: #e8f5e8;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .security-info h4 {
+            color: #2e7d32;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-item {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .detail-value {
+                text-align: left;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎓 My Awesome College</div>
+            <h1>Transcript Verification Result</h1>
+        </div>
+
+        <div class="verification-code">
+            Code: {{ verification_code }}
+        </div>
+
+        {% if result.valid %}
+            <div class="result-success">
+                <span class="result-icon">✅</span>
+                <div class="result-title">TRANSCRIPT VERIFIED</div>
+                <div class="result-subtitle">This transcript is authentic and has not been tampered with</div>
+            </div>
+
+            {% if result.data %}
+                <div class="details-grid">
+                    <div class="detail-card">
+                        <h3>📋 Student Information</h3>
+                        <div class="detail-item">
+                            <span class="detail-label">Student ID:</span>
+                            <span class="detail-value">{{ result.data.student_id }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Student Name:</span>
+                            <span class="detail-value">{{ result.data.student_name }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">College:</span>
+                            <span class="detail-value">{{ result.data.college_name }}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>🔐 Security Information</h3>
+                        <div class="detail-item">
+                            <span class="detail-label">Generated:</span>
+                            <span class="detail-value">{{ result.data.generation_timestamp|slice:":19" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Verified:</span>
+                            <span class="detail-value">{{ result.verified_at|slice:":19" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Document Hash:</span>
+                            <span class="detail-value">{{ result.data.document_hash|slice:":16" }}...</span>
+                        </div>
+                        {% if result.data.signature_data %}
+                            <div class="detail-item">
+                                <span class="detail-label">Digital Signature:</span>
+                                <span class="detail-value">✅ Present</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="security-info">
+                <h4>🛡️ Security Features Verified</h4>
+                <p>This transcript has been cryptographically verified and contains authentic academic records.</p>
+            </div>
+
+        {% else %}
+            <div class="result-error">
+                <span class="result-icon">❌</span>
+                <div class="result-title">VERIFICATION FAILED</div>
+                <div class="result-subtitle">{{ result.error|default:"The verification code is invalid or has expired" }}</div>
+            </div>
+
+            <div class="detail-card">
+                <h3>⚠️ Possible Issues</h3>
+                <ul style="padding-left: 2rem; margin-top: 1rem;">
+                    <li>The verification code may be incorrectly entered</li>
+                    <li>The code may have expired (codes are valid for 30 days)</li>
+                    <li>The transcript may be fraudulent or tampered with</li>
+                    <li>There may be a system issue</li>
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="actions">
+            <a href="{% url 'reporting:verify_transcript' %}" class="btn btn-primary">🔍 Verify Another Transcript</a>
+            <a href="#" onclick="window.print()" class="btn btn-secondary">🖨️ Print Result</a>
+        </div>
+    </div>
+</body>
+</html>

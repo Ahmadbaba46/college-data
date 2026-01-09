@@ -1,0 +1,58 @@
+# --- Python / Django ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Django
+*.log
+local_settings.py
+*.sqlite3
+/db.sqlite3
+
+# Secrets / environment
+.env
+.env.*
+
+# Media uploads and collected static
+/media/
+/static_collected/
+
+# --- Node / Vite / Tailwind ---
+node_modules/
+.npm/
+pnpm-lock.yaml
+.yarn/
+.yarnrc
+.yarnrc.yml
+
+# Vite build output (commonly 'dist')
+dist/
+
+# --- OS / Editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# --- Generated artifacts ---
+# Generated PDFs / transcripts / reports
+/transcripts/
+/api_transcripts/
+/tmp/
+*.pdf
+
+# If you want to keep sample PDFs, add explicit negations like:
+# !docs/sample.pdf

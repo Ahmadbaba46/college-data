@@ -1,0 +1,215 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Graduation Analytics | Analytics{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'analytics:overview' %}" class="text-slate-500 hover:text-slate-900 transition">Analytics</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Graduation</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">Graduation Analytics</h1>
+      <p class="mt-1 text-sm text-slate-600">Eligibility tracking and cohort analysis</p>
+    </div>
+    <a href="{% url 'analytics:export_graduation' %}" class="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 shadow-sm transition-all hover:bg-emerald-100 hover:shadow-md">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+      </svg>
+      Export CSV
+    </a>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="grid gap-6 md:grid-cols-2">
+    <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-emerald-50 to-teal-50 p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-600">Eligible for Graduation</p>
+          <p class="mt-2 text-4xl font-bold text-emerald-700">{{ eligible_count }}</p>
+        </div>
+        <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-600 shadow-lg">
+          <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-amber-50 to-orange-50 p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-600">Not Yet Eligible</p>
+          <p class="mt-2 text-4xl font-bold text-amber-700">{{ not_eligible_count }}</p>
+        </div>
+        <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-amber-600 shadow-lg">
+          <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid gap-6 lg:grid-cols-2">
+    <!-- Students by Level -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Students by Level</h2>
+      <div class="relative" style="height: 300px;">
+        <canvas id="levelChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Program Completion Rates -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Program Completion Rates</h2>
+      <div class="space-y-3">
+        {% for prog in program_completion %}
+        <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div class="mb-2 flex items-center justify-between">
+            <div>
+              <span class="font-bold text-rose-700">{{ prog.program.code }}</span>
+              <p class="text-xs text-slate-500">{{ prog.completed }}/{{ prog.total }} students</p>
+            </div>
+            <span class="text-lg font-bold {% if prog.rate >= 70 %}text-emerald-600{% elif prog.rate >= 50 %}text-amber-600{% else %}text-red-600{% endif %}">
+              {{ prog.rate }}%
+            </span>
+          </div>
+          <div class="h-2 w-full rounded-full bg-slate-200">
+            <div class="h-2 rounded-full {% if prog.rate >= 70 %}bg-emerald-500{% elif prog.rate >= 50 %}bg-amber-500{% else %}bg-red-500{% endif %}" style="width: {{ prog.rate }}%"></div>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-sm text-slate-500">No program data</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Eligible Students -->
+  {% if eligible_students %}
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+    <h2 class="mb-4 text-lg font-bold text-slate-900">Students Eligible for Graduation</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="border-b border-slate-200 bg-emerald-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Student ID</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Name</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Program</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Level</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for item in eligible_students %}
+          <tr class="hover:bg-emerald-50">
+            <td class="px-4 py-3 text-sm font-medium text-slate-900">{{ item.student.student_id }}</td>
+            <td class="px-4 py-3 text-sm text-slate-700">{{ item.student.full_name }}</td>
+            <td class="px-4 py-3 text-sm text-slate-600">{{ item.student.program.code|default:"-" }}</td>
+            <td class="px-4 py-3 text-sm text-slate-600">{{ item.student.current_level.name|default:"-" }}</td>
+            <td class="px-4 py-3">
+              <span class="inline-flex items-center gap-1 rounded-lg bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Eligible
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Not Eligible Students -->
+  {% if not_eligible_students %}
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+    <h2 class="mb-4 text-lg font-bold text-slate-900">Students Not Yet Eligible</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="border-b border-slate-200 bg-amber-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Student ID</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Name</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Program</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Level</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase text-slate-600">Reason</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for item in not_eligible_students %}
+          <tr class="hover:bg-amber-50">
+            <td class="px-4 py-3 text-sm font-medium text-slate-900">{{ item.student.student_id }}</td>
+            <td class="px-4 py-3 text-sm text-slate-700">{{ item.student.full_name }}</td>
+            <td class="px-4 py-3 text-sm text-slate-600">{{ item.student.program.code|default:"-" }}</td>
+            <td class="px-4 py-3 text-sm text-slate-600">{{ item.student.current_level.name|default:"-" }}</td>
+            <td class="px-4 py-3">
+              <span class="inline-flex items-center gap-1 rounded-lg bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Pending
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if not eligible_students|length == 0 and eligible_students|length == 0 %}
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-12 shadow-xl backdrop-blur-xl text-center">
+    <svg class="mx-auto h-16 w-16 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+    </svg>
+    <p class="mt-4 text-lg font-semibold text-slate-700">No Graduation Data Available</p>
+    <p class="mt-2 text-sm text-slate-500">Students need program assignments and completed courses to check eligibility</p>
+  </div>
+  {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Students by Level Chart
+const levelData = {{ students_by_level|safe }};
+const levelCtx = document.getElementById('levelChart').getContext('2d');
+new Chart(levelCtx, {
+  type: 'doughnut',
+  data: {
+    labels: levelData.map(d => d.current_level__name || 'Unassigned'),
+    datasets: [{
+      data: levelData.map(d => d.count),
+      backgroundColor: [
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(16, 185, 129, 0.8)',
+        'rgba(245, 158, 11, 0.8)',
+        'rgba(239, 68, 68, 0.8)',
+        'rgba(139, 92, 246, 0.8)',
+      ]
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+  }
+});
+</script>
+{% endblock %}
+

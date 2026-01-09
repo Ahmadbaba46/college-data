@@ -1,0 +1,221 @@
+<!-- Dashboard - Available to all authenticated users -->
+<a 
+  href="{% url 'portal:dashboard' %}" 
+  class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700{% endif %}"
+>
+  <svg class="h-5 w-5 transition {% if request.resolver_match.url_name == 'dashboard' %}text-blue-600{% else %}text-slate-400 group-hover:text-blue-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+  </svg>
+  Dashboard
+</a>
+
+{% if is_admin or is_data_entry %}
+<!-- Students - Admin & DataEntry only -->
+<a 
+  href="{% url 'students:list' %}" 
+  class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if request.resolver_match.app_name == 'students' %}bg-gradient-to-r from-violet-50 to-purple-50 text-violet-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 hover:text-violet-700{% endif %}"
+>
+  <svg class="h-5 w-5 transition {% if request.resolver_match.app_name == 'students' %}text-violet-600{% else %}text-slate-400 group-hover:text-violet-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+  </svg>
+  Students
+</a>
+{% endif %}
+
+{% if is_admin or is_data_entry %}
+<!-- Courses - Admin & DataEntry only -->
+<a 
+  href="{% url 'courses:list' %}" 
+  class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if request.resolver_match.app_name == 'courses' %}bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 hover:text-emerald-700{% endif %}"
+>
+  <svg class="h-5 w-5 transition {% if request.resolver_match.app_name == 'courses' %}text-emerald-600{% else %}text-slate-400 group-hover:text-emerald-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+  </svg>
+  Courses
+</a>
+
+<!-- Enrollments - Admin & DataEntry only -->
+<a 
+  href="{% url 'grading:enrollment_list' %}" 
+  class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if '/enrollments/enrollments' in request.path %}bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:text-indigo-700{% endif %}"
+>
+  <svg class="h-5 w-5 transition {% if '/enrollments/enrollments' in request.path %}text-indigo-600{% else %}text-slate-400 group-hover:text-indigo-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+  </svg>
+  Enrollments
+</a>
+
+<!-- Programs - Admin & DataEntry only -->
+<a 
+  href="{% url 'academics:program_list' %}" 
+  class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if 'program' in request.path %}bg-gradient-to-r from-rose-50 to-pink-50 text-rose-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-rose-50 hover:to-pink-50 hover:text-rose-700{% endif %}"
+>
+  <svg class="h-5 w-5 transition {% if 'program' in request.path %}text-rose-600{% else %}text-slate-400 group-hover:text-rose-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+  </svg>
+  Programs
+</a>
+{% endif %}
+
+{% if is_teacher %}
+<!-- My Courses & Grade Entry - Teacher only -->
+<a 
+  href="{% url 'grading:teacher_courses' %}" 
+  class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if 'teacher_courses' in request.path or 'grade_entry' in request.path %}bg-gradient-to-r from-purple-50 to-indigo-50 text-purple-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 hover:text-purple-700{% endif %}"
+>
+  <svg class="h-5 w-5 transition {% if 'teacher_courses' in request.path or 'grade_entry' in request.path %}text-purple-600{% else %}text-slate-400 group-hover:text-purple-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+  </svg>
+  My Courses & Grading
+</a>
+{% endif %}
+
+{% if is_admin %}
+<!-- Grade Approval Queue - Admin only -->
+<a 
+  href="{% url 'grading:approval_queue' %}" 
+  class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if '/enrollments/grades/' in request.path %}bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:text-amber-700{% endif %}"
+>
+  <svg class="h-5 w-5 transition {% if '/enrollments/grades/' in request.path %}text-amber-600{% else %}text-slate-400 group-hover:text-amber-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+  </svg>
+  Grade Approvals
+</a>
+{% endif %}
+
+<!-- Teachers - All authenticated users -->
+<a 
+  href="{% url 'teachers:list' %}" 
+  class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if '/teachers/' in request.path %}bg-gradient-to-r from-violet-50 to-purple-50 text-violet-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 hover:text-violet-700{% endif %}"
+>
+  <svg class="h-5 w-5 transition {% if '/teachers/' in request.path %}text-violet-600{% else %}text-slate-400 group-hover:text-violet-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+  </svg>
+  Teachers
+</a>
+
+<!-- Analytics - All authenticated users -->
+<a 
+  href="{% url 'analytics:overview' %}" 
+  class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if '/analytics/' in request.path %}bg-gradient-to-r from-cyan-50 to-blue-50 text-cyan-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 hover:text-cyan-700{% endif %}"
+>
+  <svg class="h-5 w-5 transition {% if '/analytics/' in request.path %}text-cyan-600{% else %}text-slate-400 group-hover:text-cyan-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+  </svg>
+  Analytics
+</a>
+
+{% if is_admin or is_data_entry %}
+<!-- Transcripts - Admin & DataEntry - Expandable -->
+<div x-data="{ open: false }" class="relative">
+  <button 
+    @click="open = !open"
+    class="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if 'transcript' in request.path %}bg-gradient-to-r from-green-50 to-emerald-50 text-green-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700{% endif %}"
+  >
+    <svg class="h-5 w-5 transition {% if 'transcript' in request.path %}text-green-600{% else %}text-slate-400 group-hover:text-green-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+    </svg>
+    <span class="flex-1 text-left">Transcripts</span>
+    <svg class="h-4 w-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+  
+  <div x-show="open" x-cloak class="ml-8 mt-1 space-y-1">
+    <a href="{% url 'reporting:transcript_generate' %}" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-green-50 hover:text-green-700">
+      Generate Transcript
+    </a>
+    <a href="{% url 'reporting:transcript_batch' %}" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-green-50 hover:text-green-700">
+      Batch Generate
+    </a>
+    <a href="{% url 'reporting:transcript_history' %}" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-green-50 hover:text-green-700">
+      History
+    </a>
+    <a href="{% url 'reporting:verify_transcript' %}" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-green-50 hover:text-green-700">
+      Verify Transcript
+    </a>
+  </div>
+</div>
+{% endif %}
+
+<!-- Reports - All authenticated users -->
+<div x-data="{ open: false }" class="relative">
+  <button 
+    @click="open = !open"
+    class="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if 'report' in request.path or 'history' in request.path %}bg-gradient-to-r from-rose-50 to-pink-50 text-rose-700{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-rose-50 hover:to-pink-50 hover:text-rose-700{% endif %}"
+  >
+    <svg class="h-5 w-5 transition {% if 'report' in request.path %}text-rose-600{% else %}text-slate-400 group-hover:text-rose-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+    </svg>
+    <span class="flex-1 text-left">Reports</span>
+    <svg class="h-4 w-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+  
+  <div x-show="open" x-cloak class="ml-8 mt-1 space-y-1">
+    <a href="{% url 'grading:grade_history' %}" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-rose-50 hover:text-rose-700">
+      Grade History
+    </a>
+    <a href="{% url 'grading:repeated_courses_report' %}" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-rose-50 hover:text-rose-700">
+      Repeated Courses
+    </a>
+  </div>
+</div>
+
+{% if is_admin %}
+<!-- Settings - Admin only - Expandable -->
+<div class="my-3 border-t border-white/10 pt-3"></div>
+<div x-data="{ open: {% if '/settings/' in request.path %}true{% else %}false{% endif %} }" class="relative">
+  <button 
+    @click="open = !open"
+    class="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {% if '/settings/' in request.path %}bg-gradient-to-r from-slate-100 to-slate-200 text-slate-900{% else %}text-slate-700 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:text-slate-900{% endif %}"
+  >
+    <svg class="h-5 w-5 transition {% if '/settings/' in request.path %}text-slate-700{% else %}text-slate-400 group-hover:text-slate-700{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+    </svg>
+    <span class="flex-1 text-left">Settings</span>
+    <svg class="h-4 w-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+  
+  <div x-show="open" x-cloak class="ml-8 mt-1 space-y-1">
+    <!-- Academic Settings -->
+    <p class="px-3 pt-2 pb-1 text-xs font-semibold text-slate-400 uppercase tracking-wider">Academic</p>
+    <a href="{% url 'core:session_list' %}" class="block rounded-lg px-3 py-2 text-sm {% if 'sessions' in request.path %}bg-slate-100 text-slate-900 font-medium{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %} transition-colors">
+      Sessions
+    </a>
+    <a href="{% url 'core:level_list' %}" class="block rounded-lg px-3 py-2 text-sm {% if 'levels' in request.path %}bg-slate-100 text-slate-900 font-medium{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %} transition-colors">
+      Levels
+    </a>
+    <a href="{% url 'core:department_list' %}" class="block rounded-lg px-3 py-2 text-sm {% if 'departments' in request.path %}bg-slate-100 text-slate-900 font-medium{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %} transition-colors">
+      Departments
+    </a>
+    <a href="{% url 'core:grading_settings' %}" class="block rounded-lg px-3 py-2 text-sm {% if 'grading' in request.path and 'settings' in request.path %}bg-slate-100 text-slate-900 font-medium{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %} transition-colors">
+      Grading Scale
+    </a>
+    <a href="{% url 'core:academic_policy_settings' %}" class="block rounded-lg px-3 py-2 text-sm {% if 'academic-policy' in request.path %}bg-slate-100 text-slate-900 font-medium{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %} transition-colors">
+      Academic Policy
+    </a>
+    
+    <!-- System Settings -->
+    <p class="px-3 pt-3 pb-1 text-xs font-semibold text-slate-400 uppercase tracking-wider">System</p>
+    <a href="{% url 'core:college_settings' %}" class="block rounded-lg px-3 py-2 text-sm {% if 'college' in request.path %}bg-slate-100 text-slate-900 font-medium{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %} transition-colors">
+      College Info
+    </a>
+    <a href="{% url 'core:user_list' %}" class="block rounded-lg px-3 py-2 text-sm {% if 'users' in request.path %}bg-slate-100 text-slate-900 font-medium{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %} transition-colors">
+      User Management
+    </a>
+    <a href="{% url 'core:audit_log' %}" class="block rounded-lg px-3 py-2 text-sm {% if 'audit-log' in request.path %}bg-slate-100 text-slate-900 font-medium{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %} transition-colors">
+      Audit Log
+    </a>
+    <a href="/admin/" class="block rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+      Django Admin
+    </a>
+  </div>
+</div>
+{% endif %}
+
+

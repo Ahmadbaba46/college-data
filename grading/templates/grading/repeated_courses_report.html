@@ -1,0 +1,202 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Repeated Courses Report | Reports{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Repeated Courses Report</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-white/90 to-amber-50/50 p-8 shadow-xl backdrop-blur-xl">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+          Repeated Courses Report
+        </h1>
+        <p class="mt-2 text-slate-600 font-medium">Students with repeated course enrollments and GPA policy impact</p>
+      </div>
+      <div class="hidden sm:flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-600 to-orange-600 shadow-xl shadow-amber-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Statistics -->
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-3xl font-bold text-amber-700">{{ total_students_with_repeats }}</div>
+          <div class="mt-1 text-sm font-medium text-slate-600">Students with Repeats</div>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100">
+          <svg class="h-6 w-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-3xl font-bold text-orange-700">{{ total_repeat_instances }}</div>
+          <div class="mt-1 text-sm font-medium text-slate-600">Total Repeat Instances</div>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100">
+          <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-3xl font-bold text-red-700">{{ top_repeated_courses|length }}</div>
+          <div class="mt-1 text-sm font-medium text-slate-600">Courses Repeated</div>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100">
+          <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Repeat Policy Info -->
+  {% if repeat_policy %}
+  <div class="rounded-2xl border border-blue-200/60 bg-blue-50 p-6 shadow-lg">
+    <div class="flex items-start gap-3">
+      <svg class="h-6 w-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <div>
+        <h3 class="text-lg font-bold text-blue-900 mb-2">Repeat Policy</h3>
+        <div class="text-sm text-blue-800 space-y-1">
+          <p><span class="font-semibold">Mode:</span> {{ repeat_policy.mode|title }}</p>
+          <p><span class="font-semibold">Max Attempts:</span> {{ repeat_policy.max_attempts }}</p>
+          {% if repeat_policy.mode == 'best' %}
+          <p class="text-xs">Only the best grade counts toward GPA</p>
+          {% elif repeat_policy.mode == 'latest' %}
+          <p class="text-xs">Only the latest grade counts toward GPA</p>
+          {% elif repeat_policy.mode == 'average' %}
+          <p class="text-xs">All grades are averaged for GPA</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Top Repeated Courses -->
+  {% if top_repeated_courses %}
+  <div class="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-lg">
+    <h2 class="text-lg font-bold text-slate-900 mb-4">Most Repeated Courses</h2>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {% for item in top_repeated_courses %}
+      <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <div class="font-mono text-sm font-bold text-amber-900">{{ item.course.code }}</div>
+            <div class="text-xs text-amber-700 mt-1">{{ item.course.title|truncatewords:5 }}</div>
+          </div>
+          <span class="inline-flex items-center rounded-full bg-amber-600 px-2.5 py-1 text-xs font-bold text-white">
+            {{ item.count }}×
+          </span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Detailed Repeat Data -->
+  {% if repeat_data %}
+  <div class="space-y-4">
+    <h2 class="text-xl font-bold text-slate-900">Student Repeat Details</h2>
+    
+    {% for item in repeat_data %}
+    <div class="rounded-2xl border border-slate-200/60 bg-white shadow-lg overflow-hidden">
+      <!-- Student Header -->
+      <div class="border-b border-slate-200 bg-gradient-to-r from-amber-50 to-orange-50 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-lg font-bold text-slate-900">{{ item.student.student_id }}</span>
+              <span class="text-slate-700">{{ item.student.full_name }}</span>
+            </div>
+            <div class="mt-1 text-sm text-slate-600">
+              Repeated: <span class="font-semibold">{{ item.course.code }}</span> - {{ item.course.title }}
+            </div>
+          </div>
+          <span class="inline-flex items-center gap-1 rounded-full bg-amber-600 px-3 py-1.5 text-sm font-bold text-white">
+            {{ item.attempt_count }} attempts
+          </span>
+        </div>
+      </div>
+
+      <!-- Attempts Timeline -->
+      <div class="p-6">
+        <div class="space-y-3">
+          {% for attempt in item.attempts %}
+          <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 font-bold text-slate-700">
+              {{ forloop.counter }}
+            </div>
+            <div class="flex-1 grid grid-cols-4 gap-4">
+              <div>
+                <div class="text-xs text-slate-500">Session</div>
+                <div class="text-sm font-semibold text-slate-800">{{ attempt.session }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-slate-500">Semester</div>
+                <div class="text-sm font-semibold text-slate-800">{{ attempt.semester }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-slate-500">Score</div>
+                <div class="text-sm font-bold text-slate-800">{{ attempt.total_score }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-slate-500">Grade</div>
+                <span class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-1 text-xs font-bold text-purple-700">
+                  {{ attempt.grade }}
+                </span>
+              </div>
+            </div>
+            <div>
+              {% if attempt.status == 'Approved' %}
+              <span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700">{{ attempt.status }}</span>
+              {% elif attempt.status == 'Pending' %}
+              <span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-700">{{ attempt.status }}</span>
+              {% else %}
+              <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700">{{ attempt.status }}</span>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="rounded-2xl border border-slate-200 bg-slate-50 p-12 text-center">
+    <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <h3 class="mt-4 text-lg font-semibold text-slate-700">No Repeated Courses</h3>
+    <p class="mt-2 text-sm text-slate-500">No students have repeated any courses yet.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

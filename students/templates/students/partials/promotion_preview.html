@@ -1,0 +1,78 @@
+{% if students %}
+<div class="rounded-2xl border border-slate-200/60 bg-white shadow-lg">
+  <div class="border-b border-slate-200 bg-gradient-to-r from-emerald-50 to-teal-50 px-6 py-4">
+    <h3 class="text-lg font-bold text-slate-900">Students to be Promoted</h3>
+    <p class="mt-1 text-sm text-slate-600">{{ students.count }} student(s) from {{ current_level.name }} ({{ current_session.name }})</p>
+  </div>
+  
+  <div class="p-6">
+    <div class="mb-4 flex items-center gap-3">
+      <input 
+        type="checkbox" 
+        id="select-all-students"
+        class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
+        onchange="document.querySelectorAll('.student-checkbox').forEach(cb => cb.checked = this.checked)"
+      >
+      <label for="select-all-students" class="text-sm font-semibold text-slate-700">
+        Select All (leave unchecked to promote all)
+      </label>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Select</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Student ID</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Name</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Program</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Current Level</th>
+            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Current Session</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 bg-white">
+          {% for student in students %}
+          <tr class="transition-colors hover:bg-slate-50">
+            <td class="whitespace-nowrap px-4 py-3">
+              <input 
+                type="checkbox" 
+                name="student_ids" 
+                value="{{ student.id }}"
+                class="student-checkbox h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
+              >
+            </td>
+            <td class="whitespace-nowrap px-4 py-3">
+              <span class="font-mono text-sm font-bold text-slate-800">{{ student.student_id }}</span>
+            </td>
+            <td class="whitespace-nowrap px-4 py-3">
+              <a href="{% url 'students:detail' student.id %}" class="text-sm font-medium text-blue-600 hover:text-blue-700">
+                {{ student.full_name }}
+              </a>
+            </td>
+            <td class="whitespace-nowrap px-4 py-3">
+              <span class="text-sm text-slate-700">{{ student.program.code|default:"—" }}</span>
+            </td>
+            <td class="whitespace-nowrap px-4 py-3">
+              <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700">
+                {{ student.current_level.name }}
+              </span>
+            </td>
+            <td class="whitespace-nowrap px-4 py-3">
+              <span class="text-sm text-slate-600">{{ student.current_session.name }}</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="rounded-2xl border border-slate-200 bg-slate-50 p-12 text-center">
+  <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+  </svg>
+  <h3 class="mt-4 text-lg font-semibold text-slate-700">No Students Found</h3>
+  <p class="mt-2 text-sm text-slate-500">No students match the selected criteria.</p>
+</div>
+{% endif %}

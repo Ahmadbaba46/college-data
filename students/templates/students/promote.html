@@ -1,0 +1,184 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Promote Students | College Portal{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'students:list' %}" class="text-slate-600 transition-colors hover:text-slate-900">Students</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Promote Students</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-8" x-data="promotionForm()">
+  <!-- Page Header -->
+  <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-white/90 to-emerald-50/50 p-8 shadow-xl backdrop-blur-xl">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-600 bg-clip-text text-transparent">
+          Promote Students
+        </h1>
+        <p class="mt-2 text-slate-600 font-medium">Bulk promotion of students to next level and session</p>
+      </div>
+      <div class="hidden sm:flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 shadow-xl shadow-emerald-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
+    
+    <!-- Selection Criteria -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white p-8 shadow-lg">
+      <h2 class="text-xl font-bold text-slate-900 mb-6">Promotion Criteria</h2>
+      
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Current Level -->
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Current Level *</label>
+          <select 
+            name="current_level" 
+            required
+            x-model="currentLevel"
+            @change="loadPreview()"
+            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition-all focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          >
+            <option value="">Select current level</option>
+            {% for level in levels %}
+            <option value="{{ level.id }}">{{ level.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <!-- Current Session -->
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Current Session *</label>
+          <select 
+            name="current_session" 
+            required
+            x-model="currentSession"
+            @change="loadPreview()"
+            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition-all focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          >
+            <option value="">Select current session</option>
+            {% for session in sessions %}
+            <option value="{{ session.id }}">{{ session.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <!-- Next Level -->
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Promote To Level *</label>
+          <select 
+            name="next_level" 
+            required
+            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition-all focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          >
+            <option value="">Select next level</option>
+            {% for level in levels %}
+            <option value="{{ level.id }}">{{ level.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <!-- Next Session -->
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-2">Promote To Session *</label>
+          <select 
+            name="next_session" 
+            required
+            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition-all focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          >
+            <option value="">Select next session</option>
+            {% for session in sessions %}
+            <option value="{{ session.id }}">{{ session.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      
+      <div class="mt-6 rounded-xl bg-blue-50 border border-blue-200 p-4">
+        <div class="flex gap-3">
+          <svg class="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <div class="text-sm text-blue-800">
+            <p class="font-semibold mb-1">Promotion Instructions:</p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>Select the current level and session of students to promote</li>
+              <li>Select the target level and session for promotion</li>
+              <li>Review the list below and optionally select specific students</li>
+              <li>If no students are selected, all students matching the criteria will be promoted</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Preview -->
+    <div 
+      id="promotion-preview"
+      hx-get="{% url 'students:promotion_preview_partial' %}"
+      hx-trigger="load from:body"
+      hx-include="[name='current_level'], [name='current_session']"
+      hx-swap="innerHTML"
+    >
+      <!-- Preview will load here via HTMX -->
+      <div class="rounded-2xl border border-slate-200 bg-slate-50 p-12 text-center">
+        <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+        <p class="mt-4 text-slate-600">Select level and session to preview students</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-between gap-4 rounded-2xl border border-slate-200/60 bg-white p-6 shadow-lg">
+      <a 
+        href="{% url 'students:list' %}" 
+        class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:shadow-md active:scale-95"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Cancel
+      </a>
+      
+      <button 
+        type="submit"
+        class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+        </svg>
+        Promote Students
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+function promotionForm() {
+  return {
+    currentLevel: '',
+    currentSession: '',
+    
+    loadPreview() {
+      if (this.currentLevel && this.currentSession) {
+        // Trigger HTMX reload
+        const previewEl = document.getElementById('promotion-preview');
+        htmx.trigger(previewEl, 'load');
+      }
+    }
+  }
+}
+</script>
+{% endblock %}

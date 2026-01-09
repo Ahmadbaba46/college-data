@@ -1,0 +1,3 @@
+student_id,student_name,course_code,course_title,session_name,ca_score,exam_score,total_score,grade
+JS002,Jane Smith (JS002),CS101,Introduction to Computer Science,2023/2024,25,50,75,A
+AL001,Ada Lovelace (AL001),CS101,Introduction to Computer Science,2023/2024,25,70,95,A

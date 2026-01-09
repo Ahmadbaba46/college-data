@@ -1,0 +1,168 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}{{ department.name }} | Departments{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'core:department_list' %}" class="text-slate-600 hover:text-slate-900">Departments</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">{{ department.name }}</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-orange-50 to-amber-50 p-6 shadow-xl">
+    <div class="flex items-start justify-between">
+      <div class="flex items-center gap-4">
+        <div class="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-orange-600 to-amber-600 shadow-lg shadow-orange-500/30">
+          <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">{{ department.name }}</h1>
+          {% if department.code %}
+          <p class="text-orange-600 font-medium">{{ department.code }}</p>
+          {% endif %}
+          {% if department.head_name %}
+          <p class="text-sm text-slate-600 mt-1">Head: {{ department.head_name }}</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        {% if not department.is_active %}
+        <span class="rounded-full bg-slate-200 px-3 py-1 text-sm font-medium text-slate-600">Inactive</span>
+        {% endif %}
+        <a href="{% url 'core:department_edit' department.id %}" class="rounded-xl bg-amber-100 p-2 text-amber-700 hover:bg-amber-200 transition">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+    {% if department.description %}
+    <p class="mt-4 text-slate-600">{{ department.description }}</p>
+    {% endif %}
+    
+    <!-- Stats -->
+    <div class="mt-4 flex flex-wrap gap-3">
+      <span class="inline-flex items-center gap-2 rounded-lg bg-white/80 border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700">
+        <svg class="h-4 w-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg>
+        {{ teachers|length }} Teachers
+      </span>
+      <span class="inline-flex items-center gap-2 rounded-lg bg-white/80 border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700">
+        <svg class="h-4 w-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        </svg>
+        {{ programs|length }} Programs
+      </span>
+      <span class="inline-flex items-center gap-2 rounded-lg bg-white/80 border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700">
+        <svg class="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+        {{ courses|length }} Courses
+      </span>
+    </div>
+  </div>
+
+  <!-- Teachers Section -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 shadow-xl backdrop-blur-xl overflow-hidden">
+    <div class="border-b border-slate-200 bg-gradient-to-r from-violet-50 to-purple-50 px-6 py-4">
+      <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+        <svg class="h-5 w-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg>
+        Teachers
+      </h2>
+    </div>
+    <div class="p-6">
+      {% if teachers %}
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {% for teacher in teachers %}
+        <a href="{% url 'teachers:detail' teacher.id %}" class="flex items-center gap-3 rounded-xl border border-slate-200 p-4 hover:bg-violet-50 transition">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-purple-600 text-white font-bold text-sm">
+            {{ teacher.first_name|slice:":1" }}{{ teacher.last_name|slice:":1" }}
+          </div>
+          <div>
+            <div class="font-medium text-slate-900">{{ teacher.full_name }}</div>
+            <div class="text-xs text-slate-500">{{ teacher.staff_id }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-slate-500 text-center py-4">No teachers in this department yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Programs Section -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 shadow-xl backdrop-blur-xl overflow-hidden">
+    <div class="border-b border-slate-200 bg-gradient-to-r from-rose-50 to-pink-50 px-6 py-4">
+      <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+        <svg class="h-5 w-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        </svg>
+        Programs
+      </h2>
+    </div>
+    <div class="p-6">
+      {% if programs %}
+      <div class="grid gap-4 md:grid-cols-2">
+        {% for program in programs %}
+        <a href="{% url 'academics:program_detail' program.id %}" class="flex items-center gap-3 rounded-xl border border-slate-200 p-4 hover:bg-rose-50 transition">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-600 to-pink-600 text-white font-bold text-xs">
+            {{ program.code|slice:":3" }}
+          </div>
+          <div>
+            <div class="font-medium text-slate-900">{{ program.name }}</div>
+            <div class="text-xs text-slate-500">{{ program.code }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-slate-500 text-center py-4">No programs in this department yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Courses Section -->
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 shadow-xl backdrop-blur-xl overflow-hidden">
+    <div class="border-b border-slate-200 bg-gradient-to-r from-emerald-50 to-teal-50 px-6 py-4">
+      <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+        <svg class="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+        Courses
+      </h2>
+    </div>
+    <div class="p-6">
+      {% if courses %}
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {% for course in courses %}
+        <a href="{% url 'courses:detail' course.id %}" class="flex items-center gap-3 rounded-xl border border-slate-200 p-4 hover:bg-emerald-50 transition">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white font-bold text-xs">
+            {{ course.units }}
+          </div>
+          <div>
+            <div class="font-medium text-slate-900">{{ course.code }}</div>
+            <div class="text-xs text-slate-500 line-clamp-1">{{ course.title }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-slate-500 text-center py-4">No courses in this department yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

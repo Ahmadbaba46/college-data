@@ -1,0 +1,58 @@
+<!-- Repeated Courses Alert Widget -->
+<div class="rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50 to-orange-50 p-6 shadow-lg">
+  <div class="flex items-start justify-between">
+    <div>
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-600 to-orange-600 shadow-lg shadow-amber-500/30">
+          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-slate-800">Repeated Courses Alert</h3>
+      </div>
+      
+      <div class="mt-4 grid grid-cols-2 gap-4">
+        <div class="rounded-xl bg-white/70 border border-amber-200 p-4">
+          <div class="text-3xl font-bold text-amber-700">{{ students_with_repeats }}</div>
+          <div class="mt-1 text-sm font-medium text-slate-600">Students with Repeats</div>
+        </div>
+        
+        <div class="rounded-xl bg-white/70 border border-amber-200 p-4">
+          <div class="text-3xl font-bold text-amber-700">{{ total_repeat_instances }}</div>
+          <div class="mt-1 text-sm font-medium text-slate-600">Total Repeat Instances</div>
+        </div>
+      </div>
+      
+      {% if top_repeated_courses %}
+      <div class="mt-4">
+        <h4 class="text-sm font-bold text-slate-700 mb-2">Most Repeated Courses</h4>
+        <div class="space-y-2">
+          {% for course in top_repeated_courses %}
+          <div class="flex items-center justify-between rounded-lg bg-white/70 border border-amber-200 px-3 py-2">
+            <div>
+              <span class="font-mono text-sm font-bold text-slate-800">{{ course.course_offering__course__code }}</span>
+              <span class="ml-2 text-sm text-slate-600">{{ course.course_offering__course__title|truncatewords:4 }}</span>
+            </div>
+            <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-700">
+              {{ course.total_repeats }} students
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      
+      <div class="mt-5">
+        <a 
+          href="#" 
+          class="inline-flex items-center gap-2 text-sm font-semibold text-amber-700 transition-colors hover:text-amber-800"
+        >
+          View Detailed Report
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

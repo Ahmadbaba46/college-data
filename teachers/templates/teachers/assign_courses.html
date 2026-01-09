@@ -1,0 +1,140 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Assign Courses | {{ teacher.full_name }}{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'teachers:list' %}" class="text-slate-500 hover:text-slate-900 transition">Teachers</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'teachers:detail' teacher.id %}" class="text-slate-500 hover:text-slate-900 transition">{{ teacher.staff_id }}</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Assign Courses</span>
+{% endblock %}
+
+{% block body %}
+<div class="mx-auto max-w-6xl space-y-6">
+  <!-- Header -->
+  <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-white/90 to-violet-50/50 p-8 shadow-xl backdrop-blur-xl">
+    <div class="flex items-center gap-4">
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-purple-600 shadow-lg shadow-violet-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Assign Courses</h1>
+        <p class="text-sm text-slate-600">{{ teacher.full_name }} ({{ teacher.staff_id }})</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-2">
+    <!-- Add Courses -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Available Courses</h2>
+      
+      <form method="post" x-data="{ selectedCount: 0, searchQuery: '' }">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+        
+        {% if available_courses %}
+        <!-- Search -->
+        <input 
+          type="text" 
+          x-model="searchQuery"
+          placeholder="Search courses..."
+          class="mb-4 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition-all focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+        >
+        
+        <div class="mb-4 max-h-96 overflow-y-auto space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+          {% for course in available_courses %}
+          <label 
+            class="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 cursor-pointer hover:bg-emerald-50 transition"
+            x-show="'{{ course.code }} {{ course.title }}'.toLowerCase().includes(searchQuery.toLowerCase()) || searchQuery === ''"
+          >
+            <input 
+              type="checkbox" 
+              name="course_ids" 
+              value="{{ course.id }}"
+              @change="selectedCount = document.querySelectorAll('input[name=course_ids]:checked').length"
+              class="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-2 focus:ring-violet-500/20"
+            >
+            <div class="flex-1">
+              <div class="font-mono text-sm font-bold text-violet-600">{{ course.code }}</div>
+              <div class="text-xs text-slate-600">{{ course.title }}</div>
+            </div>
+          </label>
+          {% endfor %}
+        </div>
+        
+        <button 
+          type="submit"
+          class="w-full rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:scale-105 hover:shadow-xl"
+          x-bind:disabled="selectedCount === 0"
+          x-bind:class="selectedCount === 0 ? 'opacity-50 cursor-not-allowed' : ''"
+        >
+          <span x-text="selectedCount > 0 ? 'Assign ' + selectedCount + ' Course(s)' : 'Select courses to assign'"></span>
+        </button>
+        {% else %}
+        <p class="text-center text-sm text-slate-500">All courses have been assigned</p>
+        {% endif %}
+      </form>
+    </div>
+
+    <!-- Assigned Courses -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="mb-4 text-lg font-bold text-slate-900">Assigned Courses ({{ assigned_courses.count }})</h2>
+      
+      {% if assigned_courses %}
+      <div class="space-y-2">
+        {% for course in assigned_courses %}
+        <div class="flex items-center justify-between rounded-lg border border-slate-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-3">
+          <div>
+            <div class="font-mono text-sm font-bold text-emerald-700">{{ course.code }}</div>
+            <div class="text-xs text-slate-600">{{ course.title|truncatewords:6 }}</div>
+          </div>
+          <form method="post" onsubmit="return confirm('Remove {{ course.code }} from this teacher?');" class="inline">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="remove">
+            <input type="hidden" name="course_id" value="{{ course.id }}">
+            <button type="submit" class="rounded-lg p-2 text-red-600 hover:bg-red-100 transition" title="Remove">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="rounded-xl bg-slate-50 p-8 text-center">
+        <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+        <p class="mt-2 text-sm text-slate-500">No courses assigned yet</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="flex justify-start">
+    <a 
+      href="{% url 'teachers:detail' teacher.id %}" 
+      class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50"
+    >
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      Back to Teacher Details
+    </a>
+  </div>
+</div>
+{% endblock %}
+

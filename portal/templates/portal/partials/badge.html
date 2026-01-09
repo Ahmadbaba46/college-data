@@ -1,0 +1,21 @@
+{#
+  usage:
+    {% include 'portal/partials/badge.html' with label='Active' %}
+    {% include 'portal/partials/badge.html' with label='Admin' tone='dark' %}
+
+  tone:
+    - light (default): for white/light cards
+    - dark: for dark/gradient backgrounds (sidebar, hero cards)
+#}
+
+{% with tone=tone|default:'light' %}
+<span class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium backdrop-blur
+  {% if tone == 'dark' %}
+    border border-white/10 bg-white/5 text-white/90
+  {% else %}
+    border border-slate-200/80 bg-slate-50 text-slate-700
+  {% endif %}">
+  {% if dot %}<span class="h-1.5 w-1.5 rounded-full {{ dot }}"></span>{% endif %}
+  {{ label }}
+</span>
+{% endwith %}

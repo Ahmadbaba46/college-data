@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Tailwind v4: tell the compiler where to scan for class usage */
+@source "../portal/templates/**/*.html";
+@source "../templates/**/*.html";
+@source "../reporting/templates/**/*.html";

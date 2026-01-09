@@ -1,0 +1,134 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Edit User {{ edit_user.username }} | Settings{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'core:user_list' %}" class="text-slate-600 hover:text-slate-900">User Management</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Edit {{ edit_user.username }}</span>
+{% endblock %}
+
+{% block body %}
+<div class="mx-auto max-w-2xl space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-slate-900">Edit User</h1>
+    <p class="mt-1 text-sm text-slate-600">Update user details and roles for {{ edit_user.username }}</p>
+  </div>
+
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
+    
+    <!-- User Info Card -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <svg class="h-5 w-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        </svg>
+        User Information
+      </h2>
+      
+      <div class="grid gap-4 md:grid-cols-2">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Username</label>
+          <input type="text" value="{{ edit_user.username }}" disabled
+            class="w-full rounded-xl border border-slate-200 bg-slate-100 px-4 py-2.5 text-slate-500">
+          <p class="mt-1 text-xs text-slate-500">Username cannot be changed</p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+          <input type="email" name="email" value="{{ edit_user.email|default:'' }}"
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">First Name</label>
+          <input type="text" name="first_name" value="{{ edit_user.first_name|default:'' }}"
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Last Name</label>
+          <input type="text" name="last_name" value="{{ edit_user.last_name|default:'' }}"
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+      </div>
+    </div>
+
+    <!-- Status & Permissions Card -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+        </svg>
+        Status & Permissions
+      </h2>
+      
+      <div class="space-y-4">
+        <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <input type="checkbox" id="is_active" name="is_active"
+            {% if edit_user.is_active %}checked{% endif %}
+            class="h-5 w-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+          <div>
+            <label for="is_active" class="block text-sm font-semibold text-slate-700">Active User</label>
+            <p class="text-xs text-slate-500">Inactive users cannot log in</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <input type="checkbox" id="is_staff" name="is_staff"
+            {% if edit_user.is_staff %}checked{% endif %}
+            class="h-5 w-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+          <div>
+            <label for="is_staff" class="block text-sm font-semibold text-slate-700">Staff Status</label>
+            <p class="text-xs text-slate-500">Staff users have admin access to the system</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roles Card -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-6 shadow-xl backdrop-blur-xl">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <svg class="h-5 w-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg>
+        Roles
+      </h2>
+      
+      <div class="space-y-3">
+        {% for role in roles %}
+        <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <input type="checkbox" id="role_{{ role.id }}" name="roles" value="{{ role.id }}"
+            {% if role.id in current_roles %}checked{% endif %}
+            class="h-5 w-5 rounded border-slate-300 text-violet-600 focus:ring-violet-500">
+          <div>
+            <label for="role_{{ role.id }}" class="block text-sm font-semibold text-slate-700">{{ role.name }}</label>
+            {% if role.description %}
+            <p class="text-xs text-slate-500">{{ role.description }}</p>
+            {% endif %}
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-sm text-slate-500">No roles available. Create roles using the CLI.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-3">
+      <a href="{% url 'core:user_list' %}" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+        Cancel
+      </a>
+      <button type="submit" class="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all hover:shadow-xl">
+        Save Changes
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

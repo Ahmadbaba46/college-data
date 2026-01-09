@@ -1,0 +1,79 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Create Session | Settings{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'core:session_list' %}" class="text-slate-500 hover:text-slate-900 transition">Sessions</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Create</span>
+{% endblock %}
+
+{% block body %}
+<div class="mx-auto max-w-2xl">
+  <div class="rounded-2xl border border-slate-200/60 bg-white/90 p-8 shadow-xl backdrop-blur-xl">
+    <div class="mb-6 flex items-center gap-4">
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Create Session</h1>
+        <p class="text-sm text-slate-600">Add a new academic session</p>
+      </div>
+    </div>
+
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      
+      <div>
+        <label for="name" class="mb-2 block text-sm font-semibold text-slate-700">
+          Session Name <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          required
+          class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          placeholder="e.g., 2024/2025"
+        >
+        <p class="mt-1 text-xs text-slate-500">Format: YYYY/YYYY (e.g., 2024/2025)</p>
+      </div>
+
+      <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <input 
+          type="checkbox" 
+          id="is_current" 
+          name="is_current"
+          class="h-5 w-5 rounded border-slate-300 text-green-600 focus:ring-green-500"
+        >
+        <div>
+          <label for="is_current" class="block text-sm font-semibold text-slate-700">Set as Current Session</label>
+          <p class="text-xs text-slate-500">Only one session can be current at a time. This will be the default for new enrollments.</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-4 border-t border-slate-200 pt-6">
+        <a href="{% url 'core:session_list' %}" class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Cancel
+        </a>
+        <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:scale-105 hover:shadow-xl">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Create Session
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

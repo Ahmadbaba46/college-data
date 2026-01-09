@@ -1,0 +1,236 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Import Students | College Portal{% endblock %}
+
+{% block breadcrumb %}
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'students:list' %}" class="text-slate-600 transition-colors hover:text-slate-900">Students</a>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="text-slate-900 font-medium">Import Students</span>
+{% endblock %}
+
+{% block body %}
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div class="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-white/90 to-blue-50/50 p-8 shadow-xl backdrop-blur-xl">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
+          Import Students
+        </h1>
+        <p class="mt-2 text-slate-600 font-medium">Bulk import student records from CSV, Excel, or JSON files</p>
+      </div>
+      <div class="hidden sm:flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-xl shadow-blue-500/30">
+        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-8 lg:grid-cols-2">
+    <!-- Upload Form -->
+    <div class="rounded-2xl border border-slate-200/60 bg-white p-8 shadow-lg">
+      <h2 class="text-xl font-bold text-slate-900 mb-6">Upload File</h2>
+      
+      <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- File Upload -->
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-3">Select Import File *</label>
+          <div class="relative">
+            <input 
+              type="file" 
+              name="import_file" 
+              accept=".csv,.xlsx,.xls,.json"
+              required
+              class="block w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-blue-600 file:to-indigo-600 file:text-white hover:file:shadow-lg file:shadow-blue-500/30 file:transition-all hover:file:scale-105 file:cursor-pointer cursor-pointer"
+            >
+          </div>
+          <p class="mt-2 text-xs text-slate-500">Supported formats: CSV (.csv), Excel (.xlsx, .xls), JSON (.json)</p>
+        </div>
+        
+        <!-- Info Box -->
+        <div class="rounded-xl bg-blue-50 border border-blue-200 p-4">
+          <div class="flex gap-3">
+            <svg class="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div class="text-sm text-blue-800">
+              <p class="font-semibold mb-1">Import Instructions:</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Required fields: student_id, first_name, last_name</li>
+                <li>Optional fields: email, phone, entry_level_id, current_level_id, current_session_id, program_id</li>
+                <li>If student_id exists, the record will be updated</li>
+                <li>Download sample templates below for the correct format</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-4">
+          <button 
+            type="submit"
+            class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            Import Students
+          </button>
+          <a 
+            href="{% url 'students:list' %}" 
+            class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:shadow-md active:scale-95"
+          >
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Sample Templates & Field Reference -->
+    <div class="space-y-6">
+      <!-- Sample Templates -->
+      <div class="rounded-2xl border border-slate-200/60 bg-white p-8 shadow-lg">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">Sample Templates</h2>
+        <p class="text-sm text-slate-600 mb-4">Download a sample template to see the correct format:</p>
+        
+        <div class="space-y-3">
+          <!-- CSV Template -->
+          <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
+                <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-semibold text-slate-800">CSV Template</div>
+                <div class="text-xs text-slate-500">Comma-separated values</div>
+              </div>
+            </div>
+            <button 
+              onclick="downloadCSVTemplate()"
+              class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white transition-all hover:bg-green-700 active:scale-95"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+              Download
+            </button>
+          </div>
+          
+          <!-- JSON Template -->
+          <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
+                <svg class="h-5 w-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-semibold text-slate-800">JSON Template</div>
+                <div class="text-xs text-slate-500">JavaScript object notation</div>
+              </div>
+            </div>
+            <button 
+              onclick="downloadJSONTemplate()"
+              class="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-3 py-2 text-xs font-semibold text-white transition-all hover:bg-amber-700 active:scale-95"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+              Download
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Field Reference -->
+      <div class="rounded-2xl border border-slate-200/60 bg-white p-8 shadow-lg">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">Field Reference</h2>
+        
+        <div class="space-y-3">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-3 py-2">
+            <div class="text-xs font-bold uppercase text-red-700 mb-1">Required</div>
+            <ul class="text-sm text-red-800 space-y-1">
+              <li><code class="font-mono text-xs bg-red-100 px-1 py-0.5 rounded">student_id</code> - Unique student identifier</li>
+              <li><code class="font-mono text-xs bg-red-100 px-1 py-0.5 rounded">first_name</code> - Student's first name</li>
+              <li><code class="font-mono text-xs bg-red-100 px-1 py-0.5 rounded">last_name</code> - Student's last name</li>
+            </ul>
+          </div>
+          
+          <div class="rounded-lg bg-blue-50 border border-blue-200 px-3 py-2">
+            <div class="text-xs font-bold uppercase text-blue-700 mb-1">Optional</div>
+            <ul class="text-sm text-blue-800 space-y-1">
+              <li><code class="font-mono text-xs bg-blue-100 px-1 py-0.5 rounded">email</code> - Email address</li>
+              <li><code class="font-mono text-xs bg-blue-100 px-1 py-0.5 rounded">phone</code> - Phone number</li>
+              <li><code class="font-mono text-xs bg-blue-100 px-1 py-0.5 rounded">entry_level_id</code> - Entry level ID (numeric)</li>
+              <li><code class="font-mono text-xs bg-blue-100 px-1 py-0.5 rounded">current_level_id</code> - Current level ID (numeric)</li>
+              <li><code class="font-mono text-xs bg-blue-100 px-1 py-0.5 rounded">current_session_id</code> - Current session ID (numeric)</li>
+              <li><code class="font-mono text-xs bg-blue-100 px-1 py-0.5 rounded">program_id</code> - Program ID (numeric)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function downloadCSVTemplate() {
+  const csv = `student_id,first_name,last_name,email,phone,entry_level_id,current_level_id,current_session_id,program_id
+ST001,John,Doe,john.doe@example.com,1234567890,1,1,1,1
+ST002,Jane,Smith,jane.smith@example.com,0987654321,1,1,1,1`;
+  
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'students_import_template.csv';
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
+function downloadJSONTemplate() {
+  const json = [
+    {
+      "student_id": "ST001",
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example.com",
+      "phone": "1234567890",
+      "entry_level_id": 1,
+      "current_level_id": 1,
+      "current_session_id": 1,
+      "program_id": 1
+    },
+    {
+      "student_id": "ST002",
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "email": "jane.smith@example.com",
+      "phone": "0987654321",
+      "entry_level_id": 1,
+      "current_level_id": 1,
+      "current_session_id": 1,
+      "program_id": 1
+    }
+  ];
+  
+  const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'students_import_template.json';
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}
