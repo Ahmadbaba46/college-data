@@ -744,4 +744,31 @@ python manage.py promote_students --from-level 100 --to-level 200
 
 ---
 
+## Git Versioning (SemVer)
+
+This project uses Git tags for releases. The current release is `v1.0.0`.
+
+### Create a release tag
+
+```bash
+# Ensure your working tree is clean and tests pass
+python manage.py test
+
+# Create an annotated tag
+git tag -a v1.0.0 -m "Release v1.0.0"
+
+# Push commits and tags
+git push
+git push --tags
+```
+
+### Bump version
+
+1. Update `college_data_cli/__init__.py` (`__version__`).
+2. Update `package.json` (`version`).
+3. Commit the change.
+4. Create and push a new tag (e.g., `v1.0.1`).
+
+---
+
 *Last Updated: January 2026*

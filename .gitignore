@@ -1,58 +1,54 @@
-# --- Python / Django ---
+# === Python / Django ===
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 *.so
 *.egg-info/
-dist/
-build/
 .eggs/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.coverage
-coverage.xml
-htmlcov/
+
+# Virtualenvs
+.venv/
+venv/
+ENV/
 
 # Django
 *.log
 local_settings.py
-*.sqlite3
-/db.sqlite3
 
-# Secrets / environment
+# SQLite DB (local dev)
+db.sqlite3
+*.sqlite3
+
+# Media / uploads (usually environment-specific)
+media/
+
+# === Node / Vite ===
+node_modules/
+dist/
+.vite/
+
+# === Environment files / secrets ===
 .env
 .env.*
+!.env.example
 
-# Media uploads and collected static
-/media/
-/static_collected/
-
-# --- Node / Vite / Tailwind ---
-node_modules/
-.npm/
-pnpm-lock.yaml
-.yarn/
-.yarnrc
-.yarnrc.yml
-
-# Vite build output (commonly 'dist')
-dist/
-
-# --- OS / Editor ---
+# === OS / Editor ===
 .DS_Store
 Thumbs.db
-.vscode/
 .idea/
-*.swp
+.vscode/
 
-# --- Generated artifacts ---
-# Generated PDFs / transcripts / reports
-/transcripts/
-/api_transcripts/
-/tmp/
+# === Generated documents / artifacts ===
 *.pdf
+*.xlsx
+*.xls
+*.png
 
-# If you want to keep sample PDFs, add explicit negations like:
-# !docs/sample.pdf
+# If you want to keep a specific asset in Git, add an exception rule above.
+
+# Project temporary folder (generated QR codes, temp PDFs, etc.)
+tmp/
+
+# Genkit runtime artifacts
+.genkit/
